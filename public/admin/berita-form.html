@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Tambah Berita — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="berita" data-title="Tambah Berita">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <a class="back-link" href="/admin/berita.html">← Kembali ke daftar berita</a>
+      <div class="alert alert-error" id="form-alert" role="alert" hidden></div>
+
+      <form id="berita-form">
+        <fieldset class="form-layout">
+          <input type="hidden" name="foto_id">
+
+          <section class="panel">
+            <div class="field">
+              <label for="judul">Judul</label>
+              <input id="judul" name="judul" type="text" required maxlength="200">
+            </div>
+
+            <div class="field">
+              <label for="ringkasan">Ringkasan</label>
+              <textarea id="ringkasan" name="ringkasan" rows="2" style="min-height: 70px;" maxlength="300"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="isi">Isi</label>
+              <textarea id="isi" name="isi" rows="14" placeholder="Pisahkan paragraf dengan baris kosong."></textarea>
+            </div>
+          </section>
+
+          <aside class="panel form-side">
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="draft">Draft</option>
+                <option value="publish">Publish</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="kategori">Kategori</label>
+              <select id="kategori" name="kategori">
+                <option value="">— Tanpa kategori —</option>
+              </select>
+              <small class="muted">Kelola daftar kategori di menu <a href="/admin/kategori.html">Master → Kategori</a>.</small>
+            </div>
+
+            <div class="field">
+              <label for="foto">Foto</label>
+              <input id="foto" type="file" accept="image/*">
+              <small class="muted">Gambar dikompres otomatis (maks. lebar 1600px, JPEG).</small>
+              <img id="foto-preview" class="photo-preview" alt="Pratinjau foto" hidden>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn" type="submit" id="submit-btn">Simpan</button>
+              <a class="btn btn-ghost" href="/admin/berita.html">Batal</a>
+            </div>
+          </aside>
+        </fieldset>
+      </form>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-berita-form.js"></script>
+</body>
+</html>

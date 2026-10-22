@@ -16,13 +16,20 @@ landing-page-berita/
 │   ├── berita.html         # daftar berita + pencarian
 │   ├── detail.html         # detail berita (?slug=)
 │   ├── admin/login.html
-│   ├── admin/dashboard.html
+│   ├── admin/dashboard.html     # ringkasan + berita terbaru
+│   ├── admin/berita.html        # daftar berita (cari, filter, hapus)
+│   ├── admin/berita-form.html   # tambah / edit (?id=) berita
+│   ├── admin/kategori.html      # master kategori
 │   └── assets/{css,js,img}
 ├── netlify/functions/      # backend
 │   ├── get-berita.js       # GET    /api/get-berita[?id=|?slug=]
 │   ├── create-berita.js    # POST   /api/create-berita        (JWT)
 │   ├── update-berita.js    # PUT    /api/update-berita        (JWT)
 │   ├── delete-berita.js    # DELETE /api/delete-berita?id=    (JWT)
+│   ├── get-kategori.js     # GET    /api/get-kategori
+│   ├── create-kategori.js  # POST   /api/create-kategori      (JWT)
+│   ├── update-kategori.js  # PUT    /api/update-kategori      (JWT)
+│   ├── delete-kategori.js  # DELETE /api/delete-kategori?id=  (JWT)
 │   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, maks 5MB)
 │   ├── login.js            # POST   /api/login
 │   └── utils/
@@ -56,13 +63,22 @@ landing-page-berita/
    | username | password_hash | nama | role |
    |----------|---------------|------|------|
 
-4. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk langkah 6:
+4. Tambah tab baru bernama **`kategori`**, isi **baris 1** (kolom A sampai B):
+
+   | id | nama |
+   |----|------|
+
+   Isi kategori dikelola dari dashboard admin (panel **Master Kategori**), tidak perlu diisi manual.
+
+5. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk langkah 6:
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_DI_SINI`**`/edit`
 
 Catatan:
 - Nama tab dan header harus persis sama (huruf kecil semua).
 - `status` berisi `draft` atau `publish`. Hanya `publish` yang tampil di website publik.
 - `id`, `slug`, `tanggal`, dan `penulis` diisi otomatis oleh sistem.
+- Kolom `kategori` di tab `berita` menyimpan **nama** kategori dari master. Mengganti nama kategori di dashboard ikut mengganti semua berita yang memakainya; kategori yang masih dipakai berita tidak bisa dihapus.
+- Berita lama yang kategorinya belum ada di master tetap bisa diedit. Kategorinya muncul dengan tanda "(tidak ada di master)" sampai diganti, atau sampai kategori dengan nama yang sama ditambahkan ke master.
 - Spreadsheet **tidak perlu di-share** ke siapa pun.
 
 ### 3. Buat folder Google Drive
@@ -193,7 +209,7 @@ npx netlify deploy --prod
 | `403 insufficient authentication scopes` / `Request had insufficient authentication scopes` | Refresh token dibuat tanpa scope `spreadsheets` atau `drive`. Ulangi langkah 5 dengan kedua scope. |
 | `403 The caller does not have permission` di Sheets | Spreadsheet bukan milik akun yang login di Playground. Pakai akun yang sama, atau share spreadsheet ke akun itu sebagai Editor. |
 | `404 File not found` saat upload | `DRIVE_FOLDER_ID` salah atau folder bukan milik akun yang sama. |
-| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` persis. |
+| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` persis. |
 | `redirect_uri_mismatch` | Redirect URI di OAuth client belum `https://developers.google.com/oauthplayground`. |
 
 ## Catatan

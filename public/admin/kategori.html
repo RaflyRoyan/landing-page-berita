@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Kategori — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="kategori" data-title="Master Kategori">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <div class="alert" id="kategori-alert" role="status" hidden></div>
+
+      <div class="form-layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Daftar Kategori</h2>
+              <p class="muted panel-sub">Kategori yang masih dipakai berita tidak bisa dihapus.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="table" id="kategori-table">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Dipakai</th>
+                  <th><span class="sr-only">Aksi</span></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel form-side">
+          <h2 class="panel-title" id="kategori-form-title">Tambah Kategori</h2>
+          <form id="kategori-form">
+            <input type="hidden" name="id">
+            <div class="field">
+              <label for="kategori-nama">Nama kategori</label>
+              <input id="kategori-nama" name="nama" type="text" required maxlength="50" placeholder="mis. Pengumuman">
+              <small class="muted">Mengganti nama ikut mengganti kategori di semua berita yang memakainya.</small>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="submit" id="kategori-submit">Tambah</button>
+              <button class="btn btn-ghost" type="button" id="kategori-cancel" hidden>Batal</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-kategori.js"></script>
+</body>
+</html>
