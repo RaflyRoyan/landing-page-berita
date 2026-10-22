@@ -28,6 +28,8 @@
     mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
     whatsapp: '<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/>',
     unread: '<circle cx="12" cy="12" r="4"/>',
+    quote: '<path d="M7 7h4v4c0 3-1.5 5-4 6"/><path d="M14 7h4v4c0 3-1.5 5-4 6"/>',
+    x: '<path d="M18 6 6 18M6 6l12 12"/>',
   };
 
   function icon(name) {
@@ -38,6 +40,7 @@
     { items: [
       { page: 'dashboard', href: '/admin/dashboard.html', label: 'Dashboard', icon: 'dashboard' },
       { page: 'berita', href: '/admin/berita.html', label: 'Berita', icon: 'berita' },
+      { page: 'testimoni', href: '/admin/testimoni.html', label: 'Testimoni', icon: 'quote', badge: 'testimoni' },
       { page: 'pesan', href: '/admin/pesan.html', label: 'Pesan Masuk', icon: 'mail', badge: 'pesan' },
     ] },
     { title: 'Master', items: [
@@ -227,29 +230,35 @@
     return API.post('upload-file', { folder, data, mimeType, filename });
   }
 
-  // ----- Pesan masuk: badge jumlah pesan baru di sidebar -----
-  function setPesanBadge(count) {
-    const badge = sidebar.querySelector('[data-badge="pesan"]');
+  // ----- Badge sidebar: jumlah item yang perlu ditindaklanjuti -----
+  const BADGES = {
+    pesan: { endpoint: 'get-pesan', count: (data) => data.filter((p) => p.status === 'baru').length },
+    testimoni: { endpoint: 'get-testimoni', count: (data) => data.filter((t) => t.status === 'menunggu').length },
+  };
+
+  function setBadge(name, count) {
+    const badge = sidebar.querySelector(`[data-badge="${name}"]`);
     if (!badge) return;
     badge.textContent = count > 99 ? '99+' : String(count);
     badge.hidden = !count;
   }
 
-  // Satu request get-pesan dipakai bersama layout, dashboard, dan halaman pesan.
+  // Satu request per data (get-pesan, get-testimoni) dipakai bersama layout, dashboard, dan halamannya.
   // force = true untuk memuat ulang setelah ada perubahan.
-  let pesanRequest = null;
-  function loadPesan(force = false) {
-    if (!pesanRequest || force) {
-      pesanRequest = API.get('get-pesan').then(({ data }) => {
-        setPesanBadge(data.filter((p) => p.status === 'baru').length);
+  const badgeRequests = {};
+  function loadBadgeData(name, force = false) {
+    const cfg = BADGES[name];
+    if (!badgeRequests[name] || force) {
+      badgeRequests[name] = API.get(cfg.endpoint).then(({ data }) => {
+        setBadge(name, cfg.count(data));
         return data;
       });
     }
-    return pesanRequest;
+    return badgeRequests[name];
   }
 
-  // Badge tidak penting untuk dimuat; kegagalan (mis. tab "pesan" belum dibuat) diabaikan di sini
-  loadPesan().catch(() => {});
+  // Badge tidak penting untuk dimuat; kegagalan (mis. tab belum dibuat) diabaikan di sini
+  Object.keys(BADGES).forEach((name) => loadBadgeData(name).catch(() => {}));
 
-  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload, loadPesan, setPesanBadge };
+  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload, loadBadgeData, setBadge };
 })();

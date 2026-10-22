@@ -56,6 +56,73 @@
       });
   }
 
+  // Landing: testimoni yang sudah publish + form kirim testimoni (masuk sebagai "menunggu")
+  const testimoniList = document.getElementById('testimoni-list');
+  if (testimoniList) {
+    const MAX_TESTIMONI = 6;
+    const testimoniCard = (t) => {
+      const avatar = t.foto_url
+        ? `<img class="testimoni-avatar" src="${escapeHtml(t.foto_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+        : `<span class="testimoni-avatar" aria-hidden="true">${escapeHtml(String(t.nama || '?').charAt(0).toUpperCase())}</span>`;
+      return `
+        <figure class="testimoni-card">
+          <blockquote>${escapeHtml(t.kutipan)}</blockquote>
+          <figcaption>
+            ${avatar}
+            <span><strong>${escapeHtml(t.nama)}</strong>${t.peran ? `<span class="muted">${escapeHtml(t.peran)}</span>` : ''}</span>
+          </figcaption>
+        </figure>`;
+    };
+
+    window.API.get('get-testimoni')
+      .then(({ data }) => {
+        testimoniList.innerHTML = data.length
+          ? data.slice(0, MAX_TESTIMONI).map(testimoniCard).join('')
+          : '<p class="empty">Belum ada testimoni. Jadilah yang pertama!</p>';
+      })
+      .catch(() => {
+        testimoniList.innerHTML = '<p class="empty">Gagal memuat testimoni.</p>';
+      });
+
+    const toggle = document.getElementById('testimoni-toggle');
+    const form = document.getElementById('testimoni-form');
+    const alertEl = document.getElementById('testimoni-alert');
+    toggle.addEventListener('click', () => {
+      form.hidden = !form.hidden;
+      toggle.setAttribute('aria-expanded', String(!form.hidden));
+      if (!form.hidden) form.nama.focus();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertEl.hidden = true;
+      if (!form.reportValidity()) return;
+
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Mengirim...';
+      try {
+        await window.API.post('submit-testimoni', {
+          nama: form.nama.value.trim(),
+          peran: form.peran.value.trim(),
+          email: form.email.value.trim(),
+          kutipan: form.kutipan.value.trim(),
+          website: form.website.value,
+        });
+        form.reset();
+        alertEl.textContent = 'Terima kasih! Testimoni Anda akan tampil setelah disetujui admin.';
+        alertEl.className = 'alert alert-success';
+      } catch (err) {
+        alertEl.textContent = err.message;
+        alertEl.className = 'alert alert-error';
+      } finally {
+        alertEl.hidden = false;
+        btn.disabled = false;
+        btn.textContent = 'Kirim Testimoni';
+      }
+    });
+  }
+
   // Landing: form kontak → disimpan ke tab "pesan"
   const contactForm = document.getElementById('contact-form');
   if (contactForm) {

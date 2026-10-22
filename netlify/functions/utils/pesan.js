@@ -1,11 +1,10 @@
 const crypto = require('crypto');
-const { getRows, appendRow } = require('./sheets');
+const { appendRow } = require('./sheets');
 const { defineResource, createHandler, httpError, validate } = require('./crud');
+const { isBot, checkRateLimit } = require('./antispam');
 const { json, parseBody } = require('./http');
 
 const SHEET = 'pesan';
-const RATE_LIMIT = 3; // maks. pesan per email ...
-const RATE_WINDOW_MS = 10 * 60 * 1000; // ... dalam 10 menit
 
 // Kolom yang diisi pengunjung lewat form kontak
 const FORM_FIELDS = {
@@ -36,28 +35,20 @@ const create = createHandler({
   run: async ({ event }) => {
     const body = parseBody(event);
 
-    // Honeypot: kolom "website" tersembunyi hanya diisi bot → pura-pura berhasil, tidak disimpan
-    if (body.website) return json(201, { success: true });
+    // Kiriman bot → pura-pura berhasil, tidak disimpan
+    if (isBot(body)) return json(201, { success: true });
 
     const data = validate(FORM_FIELDS, body);
     if (data.telepon && !/^[0-9+\-\s()]{6,20}$/.test(data.telepon)) {
       throw httpError(400, 'Nomor telepon tidak valid');
     }
-
-    const now = Date.now();
-    const email = data.email.toLowerCase();
-    const recent = (await getRows(SHEET)).filter(
-      (r) => String(r.email).toLowerCase() === email && now - new Date(r.tanggal).getTime() < RATE_WINDOW_MS
-    ).length;
-    if (recent >= RATE_LIMIT) {
-      throw httpError(429, 'Terlalu banyak pesan dalam waktu singkat. Silakan coba lagi beberapa menit lagi.');
-    }
+    await checkRateLimit(SHEET, data.email);
 
     await appendRow(SHEET, {
       id: crypto.randomUUID(),
       ...data,
       status: 'baru',
-      tanggal: new Date(now).toISOString(),
+      tanggal: new Date().toISOString(),
     });
     return json(201, { success: true });
   },

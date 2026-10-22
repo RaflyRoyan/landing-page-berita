@@ -86,6 +86,52 @@
       </div>
     </section>
 
+    <section class="section" id="testimoni">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Testimoni</span>
+            <h2>Kata mereka</h2>
+          </div>
+          <button class="btn btn-ghost" type="button" id="testimoni-toggle" aria-expanded="false" aria-controls="testimoni-form">Kirim testimoni</button>
+        </div>
+
+        <form class="contact-form testimoni-form" id="testimoni-form" novalidate hidden>
+          <h3>Kirim testimoni</h3>
+          <p class="muted">Testimoni akan tampil setelah disetujui admin. Email tidak ditampilkan.</p>
+          <div class="alert" id="testimoni-alert" role="status" hidden></div>
+          <div class="field-row">
+            <div class="field">
+              <label for="t-nama">Nama</label>
+              <input id="t-nama" name="nama" type="text" required maxlength="100" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="t-peran">Keterangan <span class="muted">(opsional, mis. Warga RT 08)</span></label>
+              <input id="t-peran" name="peran" type="text" maxlength="100">
+            </div>
+          </div>
+          <div class="field">
+            <label for="t-email">Email</label>
+            <input id="t-email" name="email" type="email" required maxlength="254" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="t-kutipan">Testimoni</label>
+            <textarea id="t-kutipan" name="kutipan" rows="4" required maxlength="500"></textarea>
+          </div>
+          <!-- Honeypot anti-spam: disembunyikan dari pengunjung, hanya diisi bot -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="t-website">Website</label>
+            <input id="t-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button class="btn" type="submit">Kirim Testimoni</button>
+        </form>
+
+        <div class="testimoni-grid" id="testimoni-list">
+          <p class="loading">Memuat testimoni...</p>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="kontak">
       <div class="container contact-grid">
         <div>

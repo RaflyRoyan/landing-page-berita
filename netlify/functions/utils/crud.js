@@ -113,7 +113,7 @@ function strip(row) {
     editable      daftar field yang boleh diubah lewat update (default: semua field)
     sort          fungsi pembanding untuk list
     publicFilter  baris yang boleh dilihat publik (tanpa login); admin melihat semua
-    toPublic      ubah baris sebelum dikirim, mis. tambah URL foto
+    toPublic      (baris, { isAdmin }) → baris yang dikirim, mis. tambah URL foto / buang kolom pribadi untuk publik
     prepare       ({ data, user, existing }) → data tambahan sebelum disimpan (existing = null saat create)
     afterUpdate   (sebelum, sesudah) → objek tambahan untuk respons update
     beforeDelete  (baris) → lempar httpError untuk menolak hapus
@@ -144,11 +144,11 @@ function defineResource(opts) {
       if (query.id) {
         const found = rows.find((r) => r.id === query.id);
         if (!found) throw notFound();
-        return json(200, { data: toPublic(strip(found)) }, cacheHeader);
+        return json(200, { data: toPublic(strip(found), { isAdmin: Boolean(user) }) }, cacheHeader);
       }
 
       if (opts.sort) rows.sort(opts.sort);
-      return json(200, { data: rows.map((r) => toPublic(strip(r))) }, cacheHeader);
+      return json(200, { data: rows.map((r) => toPublic(strip(r), { isAdmin: Boolean(user) })) }, cacheHeader);
     },
   });
 
@@ -162,7 +162,7 @@ function defineResource(opts) {
 
       const record = { id: crypto.randomUUID(), ...data };
       await appendRow(sheet, record);
-      return json(201, { data: toPublic(record) });
+      return json(201, { data: toPublic(record, { isAdmin: true }) });
     },
   });
 
@@ -184,7 +184,7 @@ function defineResource(opts) {
 
       const updated = strip(await updateRowById(sheet, id, data));
       const extra = opts.afterUpdate ? await opts.afterUpdate(strip(existing), updated) : {};
-      return json(200, { data: toPublic(updated), ...extra });
+      return json(200, { data: toPublic(updated, { isAdmin: true }), ...extra });
     },
   });
 

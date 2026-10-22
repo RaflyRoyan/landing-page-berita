@@ -1,7 +1,7 @@
 /* Dashboard admin (admin/dashboard.html): ringkasan + berita terbaru. */
 (function () {
   if (!window.Admin) return;
-  const { showAlert, showFlash, beritaRow, loadPesan } = window.Admin;
+  const { showAlert, showFlash, beritaRow, loadBadgeData } = window.Admin;
   const API = window.API;
 
   const RECENT = 5;
@@ -14,7 +14,7 @@
   showFlash(alertEl);
 
   // Kartu pesan baru dimuat terpisah: jika tab "pesan" belum ada, kartu berita tetap tampil
-  loadPesan()
+  loadBadgeData('pesan')
     .then((pesan) => setStat('pesan', pesan.filter((p) => p.status === 'baru').length))
     .catch(() => setStat('pesan', '–'));
 

@@ -1,7 +1,7 @@
 /* Pesan masuk dari form kontak (admin/pesan.html, buka langsung: ?id=). */
 (function () {
   if (!window.Admin) return;
-  const { showAlert, icon, loadPesan, setPesanBadge } = window.Admin;
+  const { showAlert, icon, loadBadgeData, setBadge } = window.Admin;
   const { escapeHtml } = window.Util;
   const API = window.API;
 
@@ -32,7 +32,7 @@
   }
 
   function updateBadge() {
-    setPesanBadge(items.filter((p) => p.status === 'baru').length);
+    setBadge('pesan', items.filter((p) => p.status === 'baru').length);
   }
 
   function filtered() {
@@ -149,7 +149,7 @@
   async function load(force) {
     listEl.innerHTML = '<li class="loading">Memuat...</li>';
     try {
-      items = await loadPesan(force);
+      items = await loadBadgeData('pesan', force);
       if (selectedId && !items.some((p) => p.id === selectedId)) selectedId = null;
       if (selectedId) openMessage(selectedId);
       else {

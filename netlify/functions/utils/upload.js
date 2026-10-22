@@ -11,6 +11,7 @@ const FOLDERS = {
   galeri: { env: 'DRIVE_FOLDER_GALERI_ID', types: IMAGE_TYPES },
   banner: { env: 'DRIVE_FOLDER_BANNER_ID', types: IMAGE_TYPES },
   dokumen: { env: 'DRIVE_FOLDER_DOKUMEN_ID', types: [...IMAGE_TYPES, 'application/pdf'] },
+  testimoni: { env: 'DRIVE_FOLDER_TESTIMONI_ID', types: IMAGE_TYPES },
 };
 
 // body = { filename, mimeType, data (base64 / data URL) }. Return { fileId, url, viewUrl }.

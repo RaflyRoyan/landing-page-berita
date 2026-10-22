@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Testimoni — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="testimoni" data-title="Testimoni">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <div class="alert" id="testimoni-alert" role="status" hidden></div>
+
+      <div class="form-layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Daftar Testimoni</h2>
+              <p class="muted panel-sub" id="testimoni-count"></p>
+            </div>
+          </div>
+
+          <form class="toolbar" id="testimoni-filter" role="search">
+            <label for="filter-status" class="sr-only">Status</label>
+            <select class="input" id="filter-status">
+              <option value="">Semua status</option>
+              <option value="menunggu">Menunggu persetujuan</option>
+              <option value="draft">Draft</option>
+              <option value="publish">Publish</option>
+            </select>
+          </form>
+
+          <div class="table-wrap">
+            <table class="table" id="testimoni-table">
+              <thead>
+                <tr>
+                  <th class="hide-sm"><span class="sr-only">Foto</span></th>
+                  <th>Testimoni</th>
+                  <th>Status</th>
+                  <th><span class="sr-only">Aksi</span></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel form-side">
+          <h2 class="panel-title" id="testimoni-form-title">Tambah Testimoni</h2>
+          <div class="alert alert-error" id="form-alert" role="alert" hidden></div>
+          <form id="testimoni-form">
+            <input type="hidden" name="id">
+            <input type="hidden" name="foto_id">
+            <p class="muted form-note" id="sumber-note" hidden></p>
+
+            <div class="field">
+              <label for="t-nama">Nama</label>
+              <input id="t-nama" name="nama" type="text" required maxlength="100">
+            </div>
+            <div class="field">
+              <label for="t-peran">Peran / keterangan</label>
+              <input id="t-peran" name="peran" type="text" maxlength="100" placeholder="mis. Warga RT 08">
+            </div>
+            <div class="field">
+              <label for="t-kutipan">Testimoni</label>
+              <textarea id="t-kutipan" name="kutipan" rows="5" required maxlength="500"></textarea>
+            </div>
+            <div class="field">
+              <label for="t-foto">Foto <span class="muted">(opsional)</span></label>
+              <input id="t-foto" type="file" accept="image/*">
+              <img id="t-foto-preview" class="photo-preview" alt="Pratinjau foto" hidden>
+              <button class="btn btn-ghost btn-sm" type="button" id="t-foto-remove" hidden>Hapus foto</button>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="t-status">Status</label>
+                <select id="t-status" name="status">
+                  <option value="draft">Draft</option>
+                  <option value="publish">Publish</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="t-urutan">Urutan <span class="muted">(opsional)</span></label>
+                <input id="t-urutan" name="urutan" type="number" min="0" step="1" placeholder="1, 2, 3...">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="submit" id="testimoni-submit">Simpan</button>
+              <button class="btn btn-ghost" type="button" id="testimoni-cancel" hidden>Batal</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-testimoni.js"></script>
+</body>
+</html>

@@ -480,6 +480,71 @@ h3 { font-size: 1.2rem; }
 
 .contact-form h3 { margin-bottom: 16px; }
 
+/* Testimoni (landing) */
+.testimoni-form { max-width: 720px; margin-bottom: 28px; }
+.testimoni-form[hidden] { display: none; }
+
+.testimoni-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.testimoni-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0;
+  padding: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.testimoni-card blockquote {
+  position: relative;
+  margin: 0;
+  padding-top: 22px;
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.testimoni-card blockquote::before {
+  content: "\201C";
+  position: absolute;
+  top: -14px;
+  left: -2px;
+  font-family: var(--font-heading);
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.testimoni-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+}
+
+.testimoni-card figcaption strong,
+.testimoni-card figcaption .muted { display: block; }
+.testimoni-card figcaption .muted { font-size: 0.85rem; }
+
+.testimoni-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
 /* Honeypot anti-spam: tidak terlihat & tidak bisa difokus, tapi tetap ada di DOM untuk bot */
 .hp-field {
   position: absolute;
@@ -800,6 +865,41 @@ h3 { font-size: 1.2rem; }
 .toolbar input.input { flex: 1 1 220px; }
 .toolbar select.input { flex: 1 1 140px; width: auto; }
 
+/* Testimoni (admin) */
+.thumb-round { width: 40px; height: 40px; border-radius: 50%; }
+
+.thumb-initial {
+  display: inline-grid;
+  place-items: center;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.testimoni-snippet {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 2px 0 4px;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.badge-muted { background: var(--color-bg); color: var(--color-muted); border: 1px solid var(--color-border); }
+
+.form-note {
+  padding: 10px 12px;
+  margin: 0 0 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  font-size: 0.85rem;
+}
+
+.form-note[hidden] { display: none; }
+
+.table td.actions .btn + .icon-btn,
+.table td.actions .icon-btn + .icon-btn { margin-left: 4px; }
+
 /* Pesan masuk */
 .message-list {
   list-style: none;
@@ -906,6 +1006,7 @@ h3 { font-size: 1.2rem; }
 }
 
 .form-layout[disabled] { opacity: 0.6; }
+.form-layout > * { min-width: 0; } /* isi lebar (mis. tabel) tidak boleh melebarkan kolom grid */
 .form-side .form-actions .btn { flex: 1 1 auto; white-space: nowrap; }
 
 .panel {
@@ -934,6 +1035,8 @@ h3 { font-size: 1.2rem; }
 
 @media (max-width: 639px) {
   .table .hide-sm { display: none; }
+  .table td.actions .btn span { display: none; }
+  .table td.actions .btn { padding: 6px 10px; }
 }
 
 .table {
@@ -995,6 +1098,7 @@ h3 { font-size: 1.2rem; }
 /* ===== Breakpoints ===== */
 @media (min-width: 640px) {
   .news-grid { grid-template-columns: repeat(2, 1fr); }
+  .testimoni-grid { grid-template-columns: repeat(2, 1fr); }
   .about-grid { grid-template-columns: repeat(3, 1fr); }
   .field-row { grid-template-columns: 1fr 1fr; }
   .topbar-name,
@@ -1022,6 +1126,7 @@ h3 { font-size: 1.2rem; }
   .hero { padding: 88px 0 96px; }
   .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 56px; }
   .news-grid { grid-template-columns: repeat(3, 1fr); }
+  .testimoni-grid { grid-template-columns: repeat(3, 1fr); }
   .contact-grid { grid-template-columns: 1fr 1fr; }
 }
 
