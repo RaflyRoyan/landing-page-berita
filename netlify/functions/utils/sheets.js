@@ -77,6 +77,24 @@ async function updateRowById(sheetName, id, data) {
   return merged;
 }
 
+// Tulis ulang banyak baris sekaligus. rows = hasil getRows() yang sudah diubah (punya _row).
+async function updateRows(sheetName, rows) {
+  if (!rows.length) return;
+  const sheets = getSheetsClient();
+  const headers = await getHeaders(sheetName);
+  const lastCol = columnLetter(headers.length);
+  await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: sheetId(),
+    requestBody: {
+      valueInputOption: 'RAW',
+      data: rows.map((row) => ({
+        range: `${sheetName}!A${row._row}:${lastCol}${row._row}`,
+        values: [toRow(headers, row)],
+      })),
+    },
+  });
+}
+
 async function deleteRowById(sheetName, id) {
   const sheets = getSheetsClient();
   const rows = await getRows(sheetName);
@@ -132,4 +150,4 @@ function columnLetter(n) {
   return s;
 }
 
-module.exports = { getRows, appendRow, updateRowById, deleteRowById, uniqueSlug };
+module.exports = { getRows, appendRow, updateRowById, updateRows, deleteRowById, uniqueSlug };

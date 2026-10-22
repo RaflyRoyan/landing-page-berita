@@ -1,4 +1,5 @@
-const { updateRowById, uniqueSlug } = require('./utils/sheets');
+const { getRows, updateRowById, uniqueSlug } = require('./utils/sheets');
+const { normalize, findKategoriByName } = require('./utils/kategori');
 const { verifyToken } = require('./utils/auth-check');
 const { json, methodNotAllowed, parseBody, serverError } = require('./utils/http');
 
@@ -22,6 +23,22 @@ exports.handler = async (event) => {
 
     if (changes.status && !STATUS.includes(changes.status)) {
       return json(400, { error: 'Status harus draft atau publish' });
+    }
+
+    if (changes.kategori !== undefined) {
+      changes.kategori = normalize(changes.kategori);
+      if (changes.kategori) {
+        // Berita lama boleh tetap memakai kategori di luar master selama kategorinya tidak diubah
+        const existing = (await getRows('berita')).find((r) => r.id === id);
+        if (!existing) return json(404, { error: 'Berita tidak ditemukan' });
+        if (existing.kategori !== changes.kategori) {
+          const master = await findKategoriByName(changes.kategori);
+          if (!master) {
+            return json(400, { error: `Kategori "${changes.kategori}" tidak ada di master kategori` });
+          }
+          changes.kategori = master.nama;
+        }
+      }
     }
 
     if (changes.judul !== undefined) {

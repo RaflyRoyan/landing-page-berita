@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const { appendRow, uniqueSlug } = require('./utils/sheets');
+const { normalize, findKategoriByName } = require('./utils/kategori');
 const { verifyToken } = require('./utils/auth-check');
 const { json, methodNotAllowed, parseBody, serverError } = require('./utils/http');
 
@@ -19,6 +20,14 @@ exports.handler = async (event) => {
     const status = body.status || 'draft';
     if (!STATUS.includes(status)) return json(400, { error: 'Status harus draft atau publish' });
 
+    // Kategori boleh kosong; jika diisi harus ada di master (pakai penulisan dari master)
+    let kategori = normalize(body.kategori);
+    if (kategori) {
+      const master = await findKategoriByName(kategori);
+      if (!master) return json(400, { error: `Kategori "${kategori}" tidak ada di master kategori` });
+      kategori = master.nama;
+    }
+
     const berita = {
       id: crypto.randomUUID(),
       judul,
@@ -26,7 +35,7 @@ exports.handler = async (event) => {
       ringkasan: String(body.ringkasan || '').trim(),
       isi: String(body.isi || ''),
       foto_id: String(body.foto_id || ''),
-      kategori: String(body.kategori || '').trim(),
+      kategori,
       status,
       tanggal: new Date().toISOString(),
       penulis: user.nama || user.username,
