@@ -26,8 +26,9 @@ function parseBody(event) {
 }
 
 function serverError(err) {
-  console.error(err);
   const status = err.statusCode || 500;
+  // Error 4xx (validasi, tidak ditemukan, dll.) adalah respons normal, tidak perlu di-log
+  if (status >= 500) console.error(err);
   return json(status, { error: status === 500 ? 'Terjadi kesalahan server' : err.message });
 }
 

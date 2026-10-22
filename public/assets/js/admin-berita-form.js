@@ -1,12 +1,10 @@
 /* Form tambah/edit berita (admin/berita-form.html, edit: ?id=). */
 (function () {
   if (!window.Admin) return;
-  const { showAlert, setFlash } = window.Admin;
+  const { showAlert, setFlash, prepareUpload, upload } = window.Admin;
   const { escapeHtml } = window.Util;
   const API = window.API;
 
-  const MAX_WIDTH = 1600;
-  const JPEG_QUALITY = 0.8;
   const LIST_URL = '/admin/berita.html';
 
   const editId = new URLSearchParams(window.location.search).get('id');
@@ -70,45 +68,13 @@
     }
   }
 
-  // Kompres gambar di browser: max lebar 1600px, JPEG kualitas 0.8
-  function compressImage(file) {
-    return new Promise((resolve, reject) => {
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, MAX_WIDTH / img.naturalWidth);
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.naturalWidth * scale);
-        canvas.height = Math.round(img.naturalHeight * scale);
-        const ctx = canvas.getContext('2d');
-        // Latar putih agar PNG transparan tidak jadi hitam di JPEG
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        URL.revokeObjectURL(url);
-        const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-        resolve({
-          dataUrl,
-          data: dataUrl.split(',')[1],
-          mimeType: 'image/jpeg',
-          filename: file.name.replace(/\.[^.]+$/, '') + '.jpg',
-        });
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('File bukan gambar yang valid'));
-      };
-      img.src = url;
-    });
-  }
-
   fotoInput.addEventListener('change', async () => {
     compressed = null;
     const file = fotoInput.files[0];
     if (!file) return;
     try {
-      compressed = await compressImage(file);
-      preview.src = compressed.dataUrl;
+      compressed = await prepareUpload(file);
+      preview.src = compressed.previewUrl;
       preview.hidden = false;
       formAlert.hidden = true;
     } catch (err) {
@@ -126,11 +92,7 @@
       // 1. Upload foto dulu (jika ada file baru), 2. simpan foto_id ke berita
       if (compressed) {
         submitBtn.textContent = 'Mengunggah foto...';
-        const { fileId } = await API.post('upload-foto', {
-          filename: compressed.filename,
-          mimeType: compressed.mimeType,
-          data: compressed.data,
-        });
+        const { fileId } = await upload(compressed, 'berita');
         form.foto_id.value = fileId;
         compressed = null;
       }

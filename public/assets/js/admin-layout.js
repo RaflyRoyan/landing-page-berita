@@ -155,5 +155,71 @@
     el.outerHTML = icon(el.dataset.icon);
   });
 
-  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow };
+  // ----- Upload -----
+  const MAX_WIDTH = 1600;
+  const JPEG_QUALITY = 0.8;
+  const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // sama dengan batas server (utils/upload.js)
+
+  // Kompres gambar di browser: max lebar 1600px, JPEG kualitas 0.8
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, MAX_WIDTH / img.naturalWidth);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        const ctx = canvas.getContext('2d');
+        // Latar putih agar PNG transparan tidak jadi hitam di JPEG
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+        resolve({
+          previewUrl: dataUrl,
+          data: dataUrl.split(',')[1],
+          mimeType: 'image/jpeg',
+          filename: file.name.replace(/\.[^.]+$/, '') + '.jpg',
+        });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('File bukan gambar yang valid'));
+      };
+      img.src = url;
+    });
+  }
+
+  function readAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result);
+        resolve({ previewUrl: dataUrl, data: dataUrl.split(',')[1], mimeType: file.type, filename: file.name });
+      };
+      reader.onerror = () => reject(new Error('File tidak bisa dibaca'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Siapkan file sebelum upload: gambar dikompres, file lain (PDF) dibaca apa adanya.
+  // Return { previewUrl, data, mimeType, filename }; lempar error jika lebih dari 4 MB.
+  async function prepareUpload(file) {
+    const prepared = file.type.startsWith('image/') ? await compressImage(file) : await readAsBase64(file);
+    if (Math.floor((prepared.data.length * 3) / 4) > MAX_UPLOAD_BYTES) {
+      throw new Error('Ukuran file melebihi 4 MB');
+    }
+    return prepared;
+  }
+
+  // Unggah file hasil prepareUpload ke folder Drive ('berita' | 'galeri' | 'banner' | 'dokumen').
+  // Return { fileId, url, viewUrl }.
+  function upload(prepared, folder) {
+    const { data, mimeType, filename } = prepared;
+    return API.post('upload-file', { folder, data, mimeType, filename });
+  }
+
+  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload };
 })();
