@@ -17,12 +17,13 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 ## 1. Form kontak
 
-- [ ] Desain: kolom form, anti-spam (honeypot / batas kirim), status pesan (baru / dibaca)
-- [ ] Tab Sheets `pesan`
-- [ ] Function publik kirim pesan (tanpa JWT) + function admin baca / tandai dibaca / hapus
-- [ ] Form di seksi Kontak `public/index.html` (saat ini belum ada form)
-- [ ] Admin: menu **Pesan Masuk** + jumlah pesan baru di dashboard
-- [ ] Uji, update README & CLAUDE.md, commit
+- [x] Desain: kolom form, anti-spam (honeypot / batas kirim), status pesan (baru / dibaca)
+- [x] Tab Sheets `pesan` → **dibuat pemilik di spreadsheet** (header: id, nama, email, telepon, pesan, status, tanggal)
+- [x] Function publik kirim pesan (tanpa JWT) + function admin baca / tandai dibaca / hapus
+- [x] Form di seksi Kontak `public/index.html`
+- [x] Admin: menu **Pesan Masuk** + jumlah pesan baru di dashboard (+ balas via email / WhatsApp)
+- [x] Uji (handler + browser), update README & CLAUDE.md
+- [x] Commit & push
 
 ## 2. Testimoni
 

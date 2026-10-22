@@ -20,6 +20,7 @@ landing-page-berita/
 │   ├── admin/berita.html        # daftar berita (cari, filter, hapus)
 │   ├── admin/berita-form.html   # tambah / edit (?id=) berita
 │   ├── admin/kategori.html      # master kategori
+│   ├── admin/pesan.html         # pesan masuk dari form kontak
 │   └── assets/{css,js,img}
 ├── netlify/functions/      # backend
 │   ├── get-berita.js       # GET    /api/get-berita[?id=|?slug=]
@@ -30,6 +31,10 @@ landing-page-berita/
 │   ├── create-kategori.js  # POST   /api/create-kategori      (JWT)
 │   ├── update-kategori.js  # PUT    /api/update-kategori      (JWT)
 │   ├── delete-kategori.js  # DELETE /api/delete-kategori?id=  (JWT)
+│   ├── create-pesan.js     # POST   /api/create-pesan         (publik, form kontak)
+│   ├── get-pesan.js        # GET    /api/get-pesan            (JWT)
+│   ├── update-pesan.js     # PUT    /api/update-pesan         (JWT, hanya status)
+│   ├── delete-pesan.js     # DELETE /api/delete-pesan?id=     (JWT)
 │   ├── upload-file.js      # POST   /api/upload-file          (JWT, maks 4MB, folder: berita/galeri/banner/dokumen)
 │   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, lama: sama dengan upload-file folder berita)
 │   ├── login.js            # POST   /api/login
@@ -73,7 +78,14 @@ landing-page-berita/
 
    > Sudah memakai versi lama tanpa master kategori? Cukup tambahkan tab `kategori` ini, lalu buat kategori yang sudah dipakai berita lewat menu Master → Kategori.
 
-5. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk langkah 6:
+5. Tambah tab baru bernama **`pesan`**, isi **baris 1** (kolom A sampai G):
+
+   | id | nama | email | telepon | pesan | status | tanggal |
+   |----|------|-------|---------|-------|--------|---------|
+
+   Tab ini menampung pesan dari form kontak di halaman depan. Semua kolom diisi otomatis; `status` berisi `baru` atau `dibaca`.
+
+6. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk bagian "6. Isi `.env`":
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_DI_SINI`**`/edit`
 
 Catatan:
@@ -192,6 +204,7 @@ Login di <http://localhost:8888/admin/login.html>. Setelah login, admin punya si
 | Dashboard | `/admin/dashboard.html` | Ringkasan (total, publish, draft, kategori), 5 berita terbaru, tombol **+ Tambah Berita** |
 | Berita | `/admin/berita.html` | Semua berita: cari, filter status/kategori, edit, hapus |
 | | `/admin/berita-form.html` | Tambah berita, atau edit dengan `?id=` |
+| Pesan Masuk | `/admin/pesan.html` | Pesan dari form kontak: badge jumlah pesan baru, buka (otomatis ditandai dibaca), balas via email / WhatsApp, tandai belum dibaca, hapus |
 | Master → Kategori | `/admin/kategori.html` | Tambah, ganti nama, dan hapus kategori |
 
 ### 8. Deploy ke Netlify
@@ -220,11 +233,12 @@ npx netlify deploy --prod
 | `403 insufficient authentication scopes` / `Request had insufficient authentication scopes` | Refresh token dibuat tanpa scope `spreadsheets` atau `drive`. Ulangi langkah 5 dengan kedua scope. |
 | `403 The caller does not have permission` di Sheets | Spreadsheet bukan milik akun yang login di Playground. Pakai akun yang sama, atau share spreadsheet ke akun itu sebagai Editor. |
 | `404 File not found` saat upload | `DRIVE_FOLDER_ID` salah atau folder bukan milik akun yang sama. |
-| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` persis. |
+| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` / `pesan` persis. |
 | `redirect_uri_mismatch` | Redirect URI di OAuth client belum `https://developers.google.com/oauthplayground`. |
 
 ## Catatan
 
+- Form kontak punya anti-spam sederhana: kolom tersembunyi (*honeypot*) untuk bot, dan maksimal 3 pesan per email dalam 10 menit. Pesan hanya bisa dibaca admin.
 - Endpoint `get-berita` di-cache 60 detik (`Cache-Control: public, max-age=60`), jadi berita baru bisa butuh hingga 1 menit untuk muncul di halaman publik.
 - Gambar dikompres di browser (lebar maks 1600px, JPEG kualitas 0.8) sebelum diunggah; server menolak file > 4 MB (batas body request Netlify ±6 MB, base64 menambah ±33%). Folder `dokumen` juga menerima PDF.
 - Token login berlaku 8 jam. Setelah kedaluwarsa, admin otomatis diarahkan ke halaman login.
