@@ -68,7 +68,9 @@ landing-page-berita/
    | id | nama |
    |----|------|
 
-   Isi kategori dikelola dari dashboard admin (panel **Master Kategori**), tidak perlu diisi manual.
+   Isi kategori dikelola dari admin (menu **Master → Kategori**), tidak perlu diisi manual.
+
+   > Sudah memakai versi lama tanpa master kategori? Cukup tambahkan tab `kategori` ini, lalu buat kategori yang sudah dipakai berita lewat menu Master → Kategori.
 
 5. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk langkah 6:
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_DI_SINI`**`/edit`
@@ -77,7 +79,7 @@ Catatan:
 - Nama tab dan header harus persis sama (huruf kecil semua).
 - `status` berisi `draft` atau `publish`. Hanya `publish` yang tampil di website publik.
 - `id`, `slug`, `tanggal`, dan `penulis` diisi otomatis oleh sistem.
-- Kolom `kategori` di tab `berita` menyimpan **nama** kategori dari master. Mengganti nama kategori di dashboard ikut mengganti semua berita yang memakainya; kategori yang masih dipakai berita tidak bisa dihapus.
+- Kolom `kategori` di tab `berita` menyimpan **nama** kategori dari master. Mengganti nama kategori di admin ikut mengganti semua berita yang memakainya; kategori yang masih dipakai berita tidak bisa dihapus.
 - Berita lama yang kategorinya belum ada di master tetap bisa diedit. Kategorinya muncul dengan tanda "(tidak ada di master)" sampai diganti, atau sampai kategori dengan nama yang sama ditambahkan ke master.
 - Spreadsheet **tidak perlu di-share** ke siapa pun.
 
@@ -181,7 +183,14 @@ Output berupa string seperti `$2b$10$....`. Tambahkan baris 2 di sheet `users`:
 |----------|---------------|------|------|
 | admin | `$2b$10$....` | Administrator | admin |
 
-Login di <http://localhost:8888/admin/login.html>.
+Login di <http://localhost:8888/admin/login.html>. Setelah login, admin punya sidebar dengan menu:
+
+| Menu | Halaman | Isi |
+|---|---|---|
+| Dashboard | `/admin/dashboard.html` | Ringkasan (total, publish, draft, kategori), 5 berita terbaru, tombol **+ Tambah Berita** |
+| Berita | `/admin/berita.html` | Semua berita: cari, filter status/kategori, edit, hapus |
+| | `/admin/berita-form.html` | Tambah berita, atau edit dengan `?id=` |
+| Master → Kategori | `/admin/kategori.html` | Tambah, ganti nama, dan hapus kategori |
 
 ### 8. Deploy ke Netlify
 

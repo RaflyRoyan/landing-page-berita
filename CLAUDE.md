@@ -63,6 +63,8 @@ The JWT is stored in `localStorage` (`admin_token`). `api.js` attaches it only o
 
 ## Roadmap (planned, not started)
 
+The working checklist and build order live in `TODO.md`. Tick items there as they are done.
+
 The user picked these features from the reference site https://rt08rw04malakajaya.com/ (an RT community site built with Zyro). We will build them one at a time. Brainstorm and design each feature with the user before implementing it. The approach for every module: one Sheets tab, files in Drive if needed, a `get-*`/`create-*`/`update-*`/`delete-*` function set, and a new menu entry in `MENU` in `admin-layout.js`.
 
 1. **Landing page content managed from admin.** The hero (title, tagline, image), Tentang/profil (including visi, misi and fokus), and the contact info (phone, email, alamat, jam operasional, WhatsApp, social links) are currently hardcoded in `public/index.html`. Admins should be able to edit them.
