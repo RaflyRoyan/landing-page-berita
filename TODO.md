@@ -27,11 +27,14 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 ## 2. Testimoni
 
-- [ ] Desain: kolom (nama, peran/afiliasi, kutipan, foto opsional, urutan, tampil/sembunyi)
-- [ ] Tab Sheets `testimoni` + function CRUD
-- [ ] Admin: halaman Testimoni
-- [ ] Landing: seksi "Kata Mereka" (slider / grid)
-- [ ] Uji, update README & CLAUDE.md, commit
+- [x] Desain: kiriman pengunjung (menunggu → disetujui admin) + tulisan admin (draft / publish); kolom nama, peran, kutipan, foto opsional, urutan
+- [x] Tab Sheets `testimoni` → **dibuat pemilik di spreadsheet** (header: id, nama, peran, kutipan, foto_id, email, sumber, status, urutan, tanggal)
+- [ ] (Opsional) folder Drive `testimoni/` + env `DRIVE_FOLDER_TESTIMONI_ID` agar admin bisa menambah foto
+- [x] Function CRUD admin + `submit-testimoni` publik (anti-spam bersama di `utils/antispam.js`)
+- [x] Admin: halaman Testimoni (setujui / tolak, edit, hapus) + badge menunggu persetujuan
+- [x] Landing: seksi "Kata Mereka" (grid kartu, maks. 6) + form kirim testimoni
+- [x] Uji (handler + browser), update README & CLAUDE.md
+- [x] Commit & push
 
 ## 3. Galeri Kegiatan
 

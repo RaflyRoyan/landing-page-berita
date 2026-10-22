@@ -36,9 +36,14 @@ Sheet schemas (tab names and headers are lowercase and must match exactly):
 - `berita`: `id, judul, slug, ringkasan, isi, foto_id, kategori, status, tanggal, penulis`. `status` is `draft` or `publish`. `id`, `slug`, `tanggal` and `penulis` are set by the server.
 - `users`: `username, password_hash, nama, role`
 - `pesan`: `id, nama, email, telepon, pesan, status, tanggal`. These are messages from the landing-page contact form (`main.js`), handled in `utils/pesan.js`.
-  - `create-pesan` is public. It has a honeypot field `website` (a filled value gets a fake 201 and nothing is stored) and a limit of 3 messages per email per 10 minutes (429).
+  - `create-pesan` is public. It uses `utils/antispam.js`: `isBot(body)` checks the honeypot field `website` (a filled value gets a fake 201 and nothing is stored) and `checkRateLimit(sheet, email)` allows 3 submissions per email per 10 minutes (429).
   - list/update/delete are admin-only (`auth: { list: true }`), because messages hold personal data, and admins can change only `status` (`baru`/`dibaca`, via `editable`).
-  - The admin page `admin/pesan.html` marks a message read when it is opened and offers mailto and wa.me reply links. `Admin.loadPesan()` shares one `get-pesan` request between the sidebar badge, the dashboard card and the page.
+  - The admin page `admin/pesan.html` marks a message read when it is opened and offers mailto and wa.me reply links. `Admin.loadBadgeData('pesan')` shares one `get-pesan` request between the sidebar badge, the dashboard card and the page (badges are configured in `BADGES` in `admin-layout.js`; `Admin.setBadge(name, n)` updates one).
+- `testimoni`: `id, nama, peran, kutipan, foto_id, email, sumber, status, urutan, tanggal`, handled in `utils/testimoni.js`.
+  - Visitors post to the public `submit-testimoni` (no photo, same antispam). It always stores `sumber: pengunjung`, `status: menunggu` and the visitor's email.
+  - Admin-written entries via `create-testimoni` get `sumber: admin` and default to `draft`. Approving means `update-testimoni` with `status: publish`; rejecting deletes the entry.
+  - Only `publish` rows are public, and `toPublic` strips `email`/`sumber` for non-admins. Admins cannot edit `email`/`sumber` (they are not in `fields`).
+  - Sorted by `urutan` (empty last), then newest. The landing page (`#testimoni`, `main.js`) shows up to 6 entries. Photos upload to the folder `testimoni`.
 - `kategori`: `id, nama`. This is the category master, managed through `*-kategori` functions and the dashboard's "Master Kategori" panel. `berita.kategori` stores the category **name**, not its id, so public pages need no lookup. Shared rules live in `utils/kategori.js`:
   - names compare case-insensitively;
   - create/update-berita reject names not in the master and store the master's spelling, but update-berita skips the check when the kategori is unchanged, so legacy rows stay editable;
@@ -49,13 +54,13 @@ Sheet schemas (tab names and headers are lowercase and must match exactly):
 
 **Generic CRUD.** `utils/crud.js` holds the shared plumbing:
 - `createHandler({ methods, auth, run })` handles the method check, JWT check and error catching.
-- `defineResource({ sheet, label, fields, auth, editable, sort, publicFilter, toPublic, prepare, afterUpdate, beforeDelete })` builds `{ list, create, update, remove }` handlers with field validation (`required`, `max`, `type` incl. `email`, `options`, `normalize`, `unique`), auto `id`, `?id=` lookup, and the public/admin cache split. `auth` sets login per action (default: public list, admin-only writes). `editable` limits which fields update may change.
+- `defineResource({ sheet, label, fields, auth, editable, sort, publicFilter, toPublic, prepare, afterUpdate, beforeDelete })` builds `{ list, create, update, remove }` handlers with field validation (`required`, `max`, `type` incl. `email`, `options`, `normalize`, `unique`), auto `id`, `?id=` lookup, and the public/admin cache split. `toPublic(row, { isAdmin })` can add derived fields (e.g. `foto_url`) or hide private columns from the public. `auth` sets login per action (default: public list, admin-only writes). `editable` limits which fields update may change.
 - Throw `httpError(status, message)` to return a 4xx with an Indonesian message. `serverError` logs only 5xx.
 - New modules should use it. Each endpoint file is one line, e.g. `exports.handler = require('./utils/kategori').resource.list;`. The kategori module is the reference implementation (`utils/kategori.js`, with a rename cascade in `afterUpdate` and a delete guard in `beforeDelete`). Berita still has hand-written functions because of its slug/penulis/kategori logic.
 
 **Uploads.** In the admin, `Admin.prepareUpload(file)` (in `admin-layout.js`) compresses images (max width 1600px, JPEG 0.8), reads other files (PDF) as-is, and rejects anything over 4 MB. `Admin.upload(prepared, folder)` POSTs base64 JSON to `upload-file`. `utils/upload.js` maps the `folder` to an env var and a MIME allowlist:
 - `berita` → `DRIVE_FOLDER_ID`
-- `galeri` / `banner` / `dokumen` → `DRIVE_FOLDER_<NAME>_ID`
+- `galeri` / `banner` / `dokumen` / `testimoni` → `DRIVE_FOLDER_<NAME>_ID`
 - only `dokumen` accepts PDF
 - a missing env var returns 503
 
@@ -86,7 +91,7 @@ The user picked these features from the reference site https://rt08rw04malakajay
 1. **Landing page content managed from admin.** The hero (title, tagline, image), Tentang/profil (including visi, misi and fokus), and the contact info (phone, email, alamat, jam operasional, WhatsApp, social links) are currently hardcoded in `public/index.html`. Admins should be able to edit them.
 2. **Galeri Kegiatan.** Activity photo albums: upload to the Drive folder `galeri/`, which already exists. Show them on the landing page ("Yang Baru" and "Galeri Kegiatan") and on a gallery page.
 3. **Pojok Informasi.** An archive of official documents such as RT decrees (e.g. "SK No. 29/SK-RT/V/08/04/2026"): number, title, date, and a PDF or image file in Drive. Show a public list with paging.
-4. **Testimoni.** A "Kata Mereka Tentang RT08" section: name, role or affiliation, quote, optional photo. Admins manage the entries.
+4. **Testimoni.** Done: visitor submissions need admin approval; admin-written entries use draft/publish (see the `testimoni` schema above).
 5. **Form kontak.** Done: the landing-page form saves to the `pesan` tab, and admins read it in the "Pesan Masuk" inbox (see the `pesan` schema above).
 **Postponed: Multi bahasa.** The user postponed multi-language support on 2026-10-22. Do not add `_en` columns, translation calls, or a language switcher until they bring it back. Notes from the earlier discussion (not final): Indonesian and English, all content machine-translated through the Claude API, admins write only Indonesian.
 
