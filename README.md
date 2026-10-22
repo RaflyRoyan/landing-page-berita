@@ -30,7 +30,8 @@ landing-page-berita/
 │   ├── create-kategori.js  # POST   /api/create-kategori      (JWT)
 │   ├── update-kategori.js  # PUT    /api/update-kategori      (JWT)
 │   ├── delete-kategori.js  # DELETE /api/delete-kategori?id=  (JWT)
-│   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, maks 5MB)
+│   ├── upload-file.js      # POST   /api/upload-file          (JWT, maks 4MB, folder: berita/galeri/banner/dokumen)
+│   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, lama: sama dengan upload-file folder berita)
 │   ├── login.js            # POST   /api/login
 │   └── utils/
 └── scripts/hash-password.js
@@ -153,6 +154,7 @@ Isi semua variabel di `.env`:
 | `GOOGLE_OAUTH_CLIENT_SECRET` | Langkah 4 | OAuth Client secret |
 | `GOOGLE_REFRESH_TOKEN` | Langkah 5 | Refresh token dari OAuth Playground |
 | `JWT_SECRET` | Buat sendiri | String acak panjang, lihat perintah di bawah |
+| `DRIVE_FOLDER_GALERI_ID`, `DRIVE_FOLDER_BANNER_ID`, `DRIVE_FOLDER_DOKUMEN_ID` | Langkah 3 | Opsional. ID folder Drive `galeri`, `banner`, dan `dokumen`; baru diperlukan saat modul yang memakainya aktif. Folder `dokumen` dibuat di samping `berita/` |
 
 Buat `JWT_SECRET`:
 
@@ -224,7 +226,7 @@ npx netlify deploy --prod
 ## Catatan
 
 - Endpoint `get-berita` di-cache 60 detik (`Cache-Control: public, max-age=60`), jadi berita baru bisa butuh hingga 1 menit untuk muncul di halaman publik.
-- Gambar dikompres di browser (lebar maks 1600px, JPEG kualitas 0.8) sebelum diunggah; server menolak file > 5MB.
+- Gambar dikompres di browser (lebar maks 1600px, JPEG kualitas 0.8) sebelum diunggah; server menolak file > 4 MB (batas body request Netlify ±6 MB, base64 menambah ±33%). Folder `dokumen` juga menerima PDF.
 - Token login berlaku 8 jam. Setelah kedaluwarsa, admin otomatis diarahkan ke halaman login.
 - Foto ditampilkan lewat `https://drive.google.com/thumbnail?id=FILE_ID&sz=w1200`.
 - Refresh token setara password akun Google untuk Drive & Sheets. Simpan hanya di `.env` dan Environment variables Netlify.

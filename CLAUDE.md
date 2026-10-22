@@ -43,7 +43,19 @@ Sheet schemas (tab names and headers are lowercase and must match exactly):
 
 **Auth.** `login.js` checks a bcrypt hash from the `users` sheet and signs an 8h JWT with `{username, nama, role}`. Write endpoints call `verifyToken(event)` from `utils/auth-check.js`, which returns the payload or `null`. `role` is never checked. `get-berita` is public, but if a valid token is present it also returns drafts and sends `Cache-Control: private, no-store`. Public responses are `public, max-age=60`.
 
-**Photos.** The browser compresses images (max width 1600px, JPEG quality 0.8) in `admin-berita-form.js`, then POSTs them as base64 JSON to `upload-foto`. The server enforces a 5MB limit and an image MIME allowlist. `utils/drive.js` uploads the file to `DRIVE_FOLDER_ID` and grants `anyone: reader` on it. Rows store only `foto_id`; `get-berita` adds `foto_url` (`drive.google.com/thumbnail?id=...&sz=w1200`).
+**Generic CRUD.** `utils/crud.js` holds the shared plumbing:
+- `createHandler({ methods, auth, run })` handles the method check, JWT check and error catching.
+- `defineResource({ sheet, label, fields, sort, publicFilter, toPublic, prepare, afterUpdate, beforeDelete })` builds `{ list, create, update, remove }` handlers with field validation (`required`, `max`, `type`, `options`, `normalize`, `unique`), auto `id`, `?id=` lookup, and the public/admin cache split.
+- Throw `httpError(status, message)` to return a 4xx with an Indonesian message. `serverError` logs only 5xx.
+- New modules should use it. Each endpoint file is one line, e.g. `exports.handler = require('./utils/kategori').resource.list;`. The kategori module is the reference implementation (`utils/kategori.js`, with a rename cascade in `afterUpdate` and a delete guard in `beforeDelete`). Berita still has hand-written functions because of its slug/penulis/kategori logic.
+
+**Uploads.** In the admin, `Admin.prepareUpload(file)` (in `admin-layout.js`) compresses images (max width 1600px, JPEG 0.8), reads other files (PDF) as-is, and rejects anything over 4 MB. `Admin.upload(prepared, folder)` POSTs base64 JSON to `upload-file`. `utils/upload.js` maps the `folder` to an env var and a MIME allowlist:
+- `berita` → `DRIVE_FOLDER_ID`
+- `galeri` / `banner` / `dokumen` → `DRIVE_FOLDER_<NAME>_ID`
+- only `dokumen` accepts PDF
+- a missing env var returns 503
+
+The 4 MB limit exists because Netlify caps request bodies at ~6 MB and base64 adds ~33%. `upload-foto` is the legacy endpoint (same as folder `berita`). `utils/drive.js` grants `anyone: reader` and returns `{ fileId, url (thumbnail), viewUrl (Drive viewer, for PDFs) }`. Rows store only the file id; `get-berita` adds `foto_url`.
 
 **Function conventions.** Use the helpers in `utils/http.js`: `json(status, body, headers)`, `parseBody`, and `serverError`. `serverError` hides the message on a 500 but passes `err.statusCode` errors through. Error bodies are shaped `{ error: "..." }` and success bodies `{ data: ... }`.
 
@@ -72,6 +84,6 @@ The user picked these features from the reference site https://rt08rw04malakajay
 3. **Pojok Informasi.** An archive of official documents such as RT decrees (e.g. "SK No. 29/SK-RT/V/08/04/2026"): number, title, date, and a PDF or image file in Drive. Show a public list with paging.
 4. **Testimoni.** A "Kata Mereka Tentang RT08" section: name, role or affiliation, quote, optional photo. Admins manage the entries.
 5. **Form kontak.** The landing page form (nama, email, telepon, pesan) should save to Sheets, with an inbox page in admin. Today the form submits nowhere.
-6. **Multi bahasa.** The reference site offers Indonesian, English, Arabic and Chinese. Which languages to support, and whether content (berita etc.) gets translated or only the UI, is still undecided.
+**Postponed: Multi bahasa.** The user postponed multi-language support on 2026-10-22. Do not add `_en` columns, translation calls, or a language switcher until they bring it back. Notes from the earlier discussion (not final): Indonesian and English, all content machine-translated through the Claude API, admins write only Indonesian.
 
 The user did **not** pick these parts of the reference site (out of scope unless asked): Program & CSR/mitra list, Data Pengelolaan Limbah (plant inventory, bank sampah, charts), and the Replikasi SAI leaderboard dashboard.

@@ -11,13 +11,9 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 ## 0. Persiapan
 
 - [x] Commit & push perubahan README terakhir (tabel menu admin + catatan upgrade tab `kategori`)
-- [ ] **Putuskan cakupan multi bahasa** sebelum membuat tab Sheets baru
-  - Bahasa apa saja? (ID, EN, AR, ZH seperti referensi, atau lebih sedikit)
-  - Hanya tampilan (menu, label, judul seksi) yang diterjemahkan, atau isi juga (berita, galeri, testimoni)?
-  - Jika isi ikut diterjemahkan, tiap tab butuh kolom per bahasa (mis. `judul_en`), jadi harus diputuskan sebelum langkah 2 dst.
-- [ ] Fondasi bersama (hindari copy-paste di tiap modul)
-  - [ ] Helper CRUD generik di `netlify/functions/utils/` untuk pola baca/tambah/ubah/hapus per tab
-  - [ ] Perluas upload: folder Drive per modul (`galeri/`, `banner/`, dokumen) dan dukungan PDF (untuk Pojok Informasi)
+- [x] Fondasi bersama (hindari copy-paste di tiap modul)
+  - [x] Helper CRUD generik di `netlify/functions/utils/` untuk pola baca/tambah/ubah/hapus per tab
+  - [x] Perluas upload: folder Drive per modul (`galeri/`, `banner/`, dokumen) dan dukungan PDF (untuk Pojok Informasi)
 
 ## 1. Form kontak
 
@@ -60,11 +56,6 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 - [ ] `public/index.html`: isi teks dari API, dengan teks bawaan sebagai cadangan jika API gagal
 - [ ] Uji, update README & CLAUDE.md, commit
 
-## 6. Multi bahasa
+## Ditunda
 
-- [ ] Desain sesuai keputusan di langkah 0 (cara pilih bahasa: `?lang=` / folder `/en/`, simpan pilihan)
-- [ ] File terjemahan UI (label, menu, judul seksi)
-- [ ] Pemilih bahasa di header situs publik
-- [ ] Jika isi ikut diterjemahkan: kolom per bahasa di form admin semua modul
-- [ ] Jika ada bahasa Arab: dukungan tampilan kanan-ke-kiri (`dir="rtl"`)
-- [ ] Uji, update README & CLAUDE.md, commit
+- **Multi bahasa**: ditunda atas permintaan pemilik (22 Okt 2026). Jangan tambahkan kolom `_en` atau pemilih bahasa sampai fitur ini diaktifkan lagi. Catatan diskusi sebelumnya (belum final): Indonesia + Inggris, semua konten diterjemahkan otomatis lewat Claude API, admin hanya menulis bahasa Indonesia.
