@@ -1,0 +1,21 @@
+{
+  "name": "landing-page-berita",
+  "version": "1.0.0",
+  "description": "Landing page + berita dengan Netlify Functions, Google Sheets, dan Google Drive",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "googleapis": "^187.0.0",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^27.14.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
