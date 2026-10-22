@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Pesan Masuk — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="pesan" data-title="Pesan Masuk">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <div class="alert" id="pesan-alert" role="status" hidden></div>
+
+      <div class="form-layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Pesan dari Pengunjung</h2>
+              <p class="muted panel-sub" id="pesan-count"></p>
+            </div>
+          </div>
+
+          <form class="toolbar" id="pesan-filter" role="search">
+            <label for="pesan-q" class="sr-only">Cari pesan</label>
+            <input class="input" type="search" id="pesan-q" placeholder="Cari nama, email, atau isi pesan..." autocomplete="off">
+            <label for="pesan-status" class="sr-only">Status</label>
+            <select class="input" id="pesan-status">
+              <option value="">Semua pesan</option>
+              <option value="baru">Belum dibaca</option>
+              <option value="dibaca">Sudah dibaca</option>
+            </select>
+          </form>
+
+          <ul class="message-list" id="pesan-list"></ul>
+        </section>
+
+        <aside class="panel form-side message-detail" id="pesan-detail">
+          <p class="empty">Pilih pesan untuk melihat isinya.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-pesan.js"></script>
+</body>
+</html>

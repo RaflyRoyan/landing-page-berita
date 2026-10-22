@@ -468,6 +468,27 @@ h3 { font-size: 1.2rem; }
 
 .contact-list strong { display: block; }
 
+.contact-grid .contact-list { margin-top: 24px; }
+
+.contact-form {
+  padding: 24px 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.contact-form h3 { margin-bottom: 16px; }
+
+/* Honeypot anti-spam: tidak terlihat & tidak bisa difokus, tapi tetap ada di DOM untuk bot */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* ===== Footer ===== */
 .site-footer {
   padding: 32px 0;
@@ -595,6 +616,21 @@ h3 { font-size: 1.2rem; }
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
+.nav-badge {
+  margin-left: auto;
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #2a1d05;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.nav-badge[hidden] { display: none; }
+
 .sidebar-footer {
   margin-top: auto;
   padding-top: 12px;
@@ -707,6 +743,15 @@ h3 { font-size: 1.2rem; }
 .stat-icon-success { background: #e4f4ea; color: var(--color-success); }
 .stat-icon-warning { background: #fdf1de; color: #8a5a12; }
 .stat-icon-accent { background: #fdf0dc; color: #b56d0d; }
+.stat-icon-danger { background: var(--color-danger-soft); color: var(--color-danger); }
+
+.stat-link {
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.stat-link:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
 
 .stat-label { font-size: 0.82rem; color: var(--color-muted); }
 
@@ -754,6 +799,101 @@ h3 { font-size: 1.2rem; }
 
 .toolbar input.input { flex: 1 1 220px; }
 .toolbar select.input { flex: 1 1 140px; width: auto; }
+
+/* Pesan masuk */
+.message-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.message-item:hover { background: var(--color-bg); }
+.message-item.is-active { background: var(--color-primary-soft); }
+
+.message-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 50%;
+}
+
+.message-item.is-unread .message-dot { background: var(--color-accent); }
+
+.message-main { flex: 1; min-width: 0; display: grid; gap: 2px; }
+
+.message-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+
+.message-top strong { font-weight: 500; }
+.message-item.is-unread .message-top strong { font-weight: 700; }
+
+.message-date {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.message-snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  color: var(--color-muted);
+}
+
+.message-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.message-head .panel-title { margin: 0; }
+
+.message-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+}
+
+.message-meta dt { color: var(--color-muted); }
+.message-meta dd { margin: 0; overflow-wrap: anywhere; }
+
+.message-body {
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+}
+
+.message-actions { margin-bottom: 8px; }
 
 /* Form berita / kategori: konten utama + panel samping */
 .form-layout {
@@ -862,7 +1002,7 @@ h3 { font-size: 1.2rem; }
 }
 
 @media (min-width: 860px) {
-  .stat-grid { grid-template-columns: repeat(4, 1fr); }
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 }
 
 @media (min-width: 860px) {

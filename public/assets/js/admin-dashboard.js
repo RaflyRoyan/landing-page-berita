@@ -1,7 +1,7 @@
 /* Dashboard admin (admin/dashboard.html): ringkasan + berita terbaru. */
 (function () {
   if (!window.Admin) return;
-  const { showAlert, showFlash, beritaRow } = window.Admin;
+  const { showAlert, showFlash, beritaRow, loadPesan } = window.Admin;
   const API = window.API;
 
   const RECENT = 5;
@@ -12,6 +12,11 @@
   };
 
   showFlash(alertEl);
+
+  // Kartu pesan baru dimuat terpisah: jika tab "pesan" belum ada, kartu berita tetap tampil
+  loadPesan()
+    .then((pesan) => setStat('pesan', pesan.filter((p) => p.status === 'baru').length))
+    .catch(() => setStat('pesan', '–'));
 
   async function load() {
     tbody.innerHTML = '<tr><td colspan="5" class="loading">Memuat...</td></tr>';

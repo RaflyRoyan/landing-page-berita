@@ -36,6 +36,18 @@ function cleanValue(name, def, raw) {
 
   if (type === 'boolean') return raw === true || raw === 'true' ? 'true' : 'false';
 
+  if (type === 'email') {
+    const value = String(raw === undefined || raw === null ? '' : raw).trim();
+    if (!value) {
+      if (def.required) throw httpError(400, `${label} wajib diisi`);
+      return '';
+    }
+    if (value.length > (def.max || 254) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      throw httpError(400, `${label} tidak valid`);
+    }
+    return value;
+  }
+
   if (type === 'number') {
     if (raw === undefined || raw === null || raw === '') {
       if (def.required) throw httpError(400, `${label} wajib diisi`);
@@ -94,8 +106,11 @@ function strip(row) {
   Opsi:
     sheet         nama tab
     label         nama data untuk pesan error, mis. 'Kategori' → "Kategori tidak ditemukan"
-    fields        { nama: { required, max, type: 'string'|'number'|'boolean', options, normalize,
+    fields        { nama: { required, max, type: 'string'|'number'|'boolean'|'email', options, normalize,
                     unique, uniqueMessage, default, label } }
+    auth          wajib login per aksi; default { list: false, create: true, update: true, remove: true }.
+                  list: true → data tidak pernah tampil ke publik (mis. pesan berisi data pribadi)
+    editable      daftar field yang boleh diubah lewat update (default: semua field)
     sort          fungsi pembanding untuk list
     publicFilter  baris yang boleh dilihat publik (tanpa login); admin melihat semua
     toPublic      ubah baris sebelum dikirim, mis. tambah URL foto
@@ -109,10 +124,14 @@ function defineResource(opts) {
   const { sheet, label = 'Data', fields } = opts;
   const toPublic = opts.toPublic || ((row) => row);
   const notFound = () => httpError(404, `${label} tidak ditemukan`);
+  const auth = { list: false, create: true, update: true, remove: true, ...opts.auth };
+  const editableFields = opts.editable
+    ? Object.fromEntries(Object.entries(fields).filter(([name]) => opts.editable.includes(name)))
+    : fields;
 
   const list = createHandler({
     methods: ['GET'],
-    auth: false,
+    auth: auth.list,
     run: async ({ user, query }) => {
       let rows = await getRows(sheet);
       if (!user && opts.publicFilter) rows = rows.filter(opts.publicFilter);
@@ -135,6 +154,7 @@ function defineResource(opts) {
 
   const create = createHandler({
     methods: ['POST'],
+    auth: auth.create,
     run: async ({ event, user }) => {
       let data = validate(fields, parseBody(event));
       checkUnique(fields, await getRows(sheet), data);
@@ -148,6 +168,7 @@ function defineResource(opts) {
 
   const update = createHandler({
     methods: ['PUT', 'PATCH'],
+    auth: auth.update,
     run: async ({ event, user, query }) => {
       const body = parseBody(event);
       const id = body.id || query.id;
@@ -157,8 +178,8 @@ function defineResource(opts) {
       const existing = rows.find((r) => r.id === id);
       if (!existing) throw notFound();
 
-      let data = validate(fields, body, { partial: true });
-      checkUnique(fields, rows, data, id);
+      let data = validate(editableFields, body, { partial: true });
+      checkUnique(editableFields, rows, data, id);
       if (opts.prepare) data = { ...data, ...(await opts.prepare({ data, user, existing: strip(existing) })) };
 
       const updated = strip(await updateRowById(sheet, id, data));
@@ -169,6 +190,7 @@ function defineResource(opts) {
 
   const remove = createHandler({
     methods: ['DELETE', 'POST'],
+    auth: auth.remove,
     run: async ({ event, query }) => {
       const id = query.id || parseBody(event).id;
       if (!id) throw httpError(400, 'id wajib diisi');
@@ -185,4 +207,4 @@ function defineResource(opts) {
   return { list, create, update, remove };
 }
 
-module.exports = { defineResource, createHandler, httpError, validate };
+module.exports = { defineResource, createHandler, httpError, validate, checkUnique, strip };

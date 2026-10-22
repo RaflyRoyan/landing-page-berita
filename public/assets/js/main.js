@@ -55,4 +55,41 @@
         latest.innerHTML = '<p class="empty">Gagal memuat berita.</p>';
       });
   }
+
+  // Landing: form kontak → disimpan ke tab "pesan"
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    const alertEl = document.getElementById('contact-alert');
+    const showContactAlert = (message, type) => {
+      alertEl.textContent = message;
+      alertEl.className = `alert alert-${type}`;
+      alertEl.hidden = false;
+    };
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertEl.hidden = true;
+      if (!contactForm.reportValidity()) return;
+
+      const btn = contactForm.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Mengirim...';
+      try {
+        await window.API.post('create-pesan', {
+          nama: contactForm.nama.value.trim(),
+          email: contactForm.email.value.trim(),
+          telepon: contactForm.telepon.value.trim(),
+          pesan: contactForm.pesan.value.trim(),
+          website: contactForm.website.value,
+        });
+        contactForm.reset();
+        showContactAlert('Terima kasih, pesan Anda sudah kami terima.', 'success');
+      } catch (err) {
+        showContactAlert(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Pesan';
+      }
+    });
+  }
 })();

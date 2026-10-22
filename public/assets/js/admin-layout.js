@@ -25,6 +25,9 @@
     check: '<path d="M20 6 9 17l-5-5"/>',
     draft: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
     arrow: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+    whatsapp: '<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/>',
+    unread: '<circle cx="12" cy="12" r="4"/>',
   };
 
   function icon(name) {
@@ -35,6 +38,7 @@
     { items: [
       { page: 'dashboard', href: '/admin/dashboard.html', label: 'Dashboard', icon: 'dashboard' },
       { page: 'berita', href: '/admin/berita.html', label: 'Berita', icon: 'berita' },
+      { page: 'pesan', href: '/admin/pesan.html', label: 'Pesan Masuk', icon: 'mail', badge: 'pesan' },
     ] },
     { title: 'Master', items: [
       { page: 'kategori', href: '/admin/kategori.html', label: 'Kategori', icon: 'kategori' },
@@ -57,7 +61,9 @@
           .map(
             (m) => `<a href="${m.href}" class="${m.page === active ? 'active' : ''}"${
               m.page === active ? ' aria-current="page"' : ''
-            }>${icon(m.icon)}<span>${escapeHtml(m.label)}</span></a>`
+            }>${icon(m.icon)}<span>${escapeHtml(m.label)}</span>${
+              m.badge ? `<span class="nav-badge" data-badge="${m.badge}" hidden></span>` : ''
+            }</a>`
           )
           .join('')}`
       ).join('')}
@@ -221,5 +227,29 @@
     return API.post('upload-file', { folder, data, mimeType, filename });
   }
 
-  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload };
+  // ----- Pesan masuk: badge jumlah pesan baru di sidebar -----
+  function setPesanBadge(count) {
+    const badge = sidebar.querySelector('[data-badge="pesan"]');
+    if (!badge) return;
+    badge.textContent = count > 99 ? '99+' : String(count);
+    badge.hidden = !count;
+  }
+
+  // Satu request get-pesan dipakai bersama layout, dashboard, dan halaman pesan.
+  // force = true untuk memuat ulang setelah ada perubahan.
+  let pesanRequest = null;
+  function loadPesan(force = false) {
+    if (!pesanRequest || force) {
+      pesanRequest = API.get('get-pesan').then(({ data }) => {
+        setPesanBadge(data.filter((p) => p.status === 'baru').length);
+        return data;
+      });
+    }
+    return pesanRequest;
+  }
+
+  // Badge tidak penting untuk dimuat; kegagalan (mis. tab "pesan" belum dibuat) diabaikan di sini
+  loadPesan().catch(() => {});
+
+  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload, loadPesan, setPesanBadge };
 })();
