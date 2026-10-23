@@ -49,11 +49,14 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 ## 4. Pojok Informasi
 
-- [ ] Desain: kolom (nomor, judul, tanggal, jenis dokumen, file PDF/gambar, ringkasan)
-- [ ] Tab Sheets + function CRUD; upload PDF ke Drive
-- [ ] Admin: halaman Pojok Informasi
-- [ ] Publik: halaman daftar dokumen dengan paging + tombol lihat/unduh
-- [ ] Uji, update README & CLAUDE.md, commit
+- [x] Desain: kolom nomor (opsional, unik), judul, jenis (daftar tetap), tanggal dokumen, ringkasan, file PDF/gambar, draft/publish; paging 10; seksi 3 dokumen terbaru di landing
+- [x] Tab Sheets `dokumen` → **dibuat pemilik di spreadsheet** (header: id, nomor, judul, jenis, tanggal_dokumen, ringkasan, file_id, file_tipe, status, tanggal)
+- [x] Env `DRIVE_FOLDER_DOKUMEN_ID` (folder `dokumen/`) → **diisi pemilik** di `.env` & Netlify
+- [x] Function CRUD `*-dokumen`; upload PDF / gambar ke folder Drive `dokumen/`
+- [x] Admin: halaman Pojok Informasi
+- [x] Publik: halaman `informasi.html` (cari, filter jenis, paging 10, tombol lihat/unduh) + seksi "Pojok informasi" di landing
+- [x] Uji, update README & CLAUDE.md
+- [x] Commit & push
 
 ## 5. Konten landing page lewat admin
 

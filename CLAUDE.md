@@ -49,6 +49,10 @@ Sheet schemas (tab names and headers are lowercase and must match exactly):
   - `toPublic` adds `sampul_url` (w800), `jumlah_foto` and `foto: [{ id, thumb_url (w400), url (w1600) }]`. `thumbnailUrl(id, size)` in `utils/drive.js` takes the width.
   - Only `publish` rows are public; sorted by `tanggal_kegiatan` desc. The landing page (`#galeri`, `main.js` `renderAlbumCard`) shows 6 albums; `galeri.html` lists all and `galeri.html?id=` shows one album with a vanilla lightbox (`galeri.js`: arrows, Esc, swipe, focus trap).
   - Admin: `admin/galeri.html` (list) and `admin/galeri-form.html` (multi-select, max 20 per pick; photos are compressed on pick and uploaded one by one to folder `galeri` on save, so a failed save only re-uploads the rest). Deleting an album or photo does not delete Drive files.
+- `dokumen`: `id, nomor, judul, jenis, tanggal_dokumen, ringkasan, file_id, file_tipe, status, tanggal`, handled in `utils/dokumen.js` (Pojok Informasi).
+  - `jenis` is a fixed list (`JENIS`: SK, Surat Edaran, Pengumuman, Laporan, Lainnya), duplicated in `admin-dokumen.js`; the user chose a fixed list over a master tab. `nomor` is optional but unique when filled (`checkUnique` skips empty values). `file_tipe` is `pdf`/`gambar`, set by the admin page from the uploaded MIME type.
+  - `toPublic` adds `lihat_url` (Drive viewer for PDF, w1600 thumbnail for images) and `unduh_url` (`uc?export=download`). Only `publish` rows are public; sorted by `tanggal_dokumen` desc.
+  - Admin: `admin/dokumen.html` (list + side form, like testimoni); files upload to folder `dokumen`. Public: landing `#informasi` shows 3 (`main.js` `renderDokumenItem`); `informasi.html` (`informasi.js`) pages 10 per page client-side with search/jenis filter kept in the URL (`?q=&jenis=&hal=`).
 - `kategori`: `id, nama`. This is the category master, managed through `*-kategori` functions and the dashboard's "Master Kategori" panel. `berita.kategori` stores the category **name**, not its id, so public pages need no lookup. Shared rules live in `utils/kategori.js`:
   - names compare case-insensitively;
   - create/update-berita reject names not in the master and store the master's spelling, but update-berita skips the check when the kategori is unchanged, so legacy rows stay editable;
@@ -77,9 +81,10 @@ The 4 MB limit exists because Netlify caps request bodies at ~6 MB and base64 ad
 - `main.js`: nav, footer, news cards and the landing page's latest 3 posts
 - `berita.js`: the list/search page and `detail.html?slug=`
 - `galeri.js`: `galeri.html` (album list, `?id=` album + lightbox)
+- `informasi.js`: `informasi.html` (document list with paging)
 - `admin-login.js`: the login page
 
-The admin area is one HTML page per menu: `dashboard.html` (stats and recent news), `berita.html` (list), `berita-form.html` (add, or edit with `?id=`), `galeri.html` / `galeri-form.html` (same list + form pattern), `testimoni.html`, `pesan.html`, and `kategori.html`.
+The admin area is one HTML page per menu: `dashboard.html` (stats and recent news), `berita.html` (list), `berita-form.html` (add, or edit with `?id=`), `galeri.html` / `galeri-form.html` (same list + form pattern), `dokumen.html`, `testimoni.html`, `pesan.html`, and `kategori.html`.
 - Each page has `<body class="admin-body" data-page data-title>` with an empty `<aside id="admin-sidebar">` and `<header id="admin-topbar">`.
 - `admin-layout.js` loads before the page script. It redirects to login when the token is invalid; otherwise it renders the sidebar and topbar and exposes `window.Admin` (`icon`, `showAlert`, `setFlash`/`showFlash`, `beritaRow`).
 - The menu lives in the `MENU` array in `admin-layout.js`. `<span data-icon="name">` is replaced with an inline SVG.
@@ -96,7 +101,7 @@ The user picked these features from the reference site https://rt08rw04malakajay
 
 1. **Landing page content managed from admin.** The hero (title, tagline, image), Tentang/profil (including visi, misi and fokus), and the contact info (phone, email, alamat, jam operasional, WhatsApp, social links) are currently hardcoded in `public/index.html`. Admins should be able to edit them.
 2. **Galeri Kegiatan.** Done: albums per activity (see the `galeri` schema above). "Yang Baru" from the reference site was dropped; the latest berita and galeri sections cover it.
-3. **Pojok Informasi.** An archive of official documents such as RT decrees (e.g. "SK No. 29/SK-RT/V/08/04/2026"): number, title, date, and a PDF or image file in Drive. Show a public list with paging.
+3. **Pojok Informasi.** Done: document archive with paging (see the `dokumen` schema above).
 4. **Testimoni.** Done: visitor submissions need admin approval; admin-written entries use draft/publish (see the `testimoni` schema above).
 5. **Form kontak.** Done: the landing-page form saves to the `pesan` tab, and admins read it in the "Pesan Masuk" inbox (see the `pesan` schema above).
 **Postponed: Multi bahasa.** The user postponed multi-language support on 2026-10-22. Do not add `_en` columns, translation calls, or a language switcher until they bring it back. Notes from the earlier discussion (not final): Indonesian and English, all content machine-translated through the Claude API, admins write only Indonesian.
