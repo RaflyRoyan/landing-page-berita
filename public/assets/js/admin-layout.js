@@ -34,6 +34,7 @@
     star: '<path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>',
     left: '<path d="m15 18-6-6 6-6"/>',
     right: '<path d="m9 18 6-6-6-6"/>',
+    folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   };
 
   function icon(name) {
@@ -45,6 +46,7 @@
       { page: 'dashboard', href: '/admin/dashboard.html', label: 'Dashboard', icon: 'dashboard' },
       { page: 'berita', href: '/admin/berita.html', label: 'Berita', icon: 'berita' },
       { page: 'galeri', href: '/admin/galeri.html', label: 'Galeri', icon: 'image' },
+      { page: 'dokumen', href: '/admin/dokumen.html', label: 'Pojok Informasi', icon: 'folder' },
       { page: 'testimoni', href: '/admin/testimoni.html', label: 'Testimoni', icon: 'quote', badge: 'testimoni' },
       { page: 'pesan', href: '/admin/pesan.html', label: 'Pesan Masuk', icon: 'mail', badge: 'pesan' },
     ] },
@@ -228,7 +230,7 @@
     return prepared;
   }
 
-  // Unggah file hasil prepareUpload ke folder Drive ('berita' | 'galeri' | 'banner' | 'dokumen').
+  // Unggah file hasil prepareUpload ke folder Drive ('berita' | 'galeri' | 'banner' | 'dokumen' | 'testimoni').
   // Return { fileId, url, viewUrl }.
   function upload(prepared, folder) {
     const { data, mimeType, filename } = prepared;

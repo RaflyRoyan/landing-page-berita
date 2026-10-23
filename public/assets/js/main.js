@@ -90,6 +90,43 @@
       });
   }
 
+  // Satu dokumen Pojok Informasi, dipakai landing dan informasi.html
+  function dokumenItem(d) {
+    return `
+      <article class="doc-item">
+        <span class="doc-icon" aria-hidden="true">${d.file_tipe === 'pdf' ? 'PDF' : 'IMG'}</span>
+        <div class="doc-main">
+          <div class="meta">
+            <span class="badge">${escapeHtml(d.jenis)}</span>
+            <span>${escapeHtml(formatDate(d.tanggal_dokumen))}</span>
+          </div>
+          <h3>${escapeHtml(d.judul)}</h3>
+          ${d.nomor ? `<p class="doc-nomor">${escapeHtml(d.nomor)}</p>` : ''}
+          ${d.ringkasan ? `<p class="doc-ringkasan">${escapeHtml(d.ringkasan)}</p>` : ''}
+        </div>
+        <div class="doc-actions">
+          <a class="btn btn-sm btn-outline" href="${escapeHtml(d.lihat_url)}" target="_blank" rel="noopener">Lihat<span class="sr-only"> ${escapeHtml(d.judul)}</span></a>
+          <a class="btn btn-sm btn-ghost" href="${escapeHtml(d.unduh_url)}" rel="noopener">Unduh<span class="sr-only"> ${escapeHtml(d.judul)}</span></a>
+        </div>
+      </article>`;
+  }
+
+  window.renderDokumenItem = dokumenItem;
+
+  // Landing: 3 dokumen terbaru
+  const latestDokumen = document.getElementById('latest-dokumen');
+  if (latestDokumen) {
+    window.API.get('get-dokumen')
+      .then(({ data }) => {
+        latestDokumen.innerHTML = data.length
+          ? data.slice(0, 3).map(dokumenItem).join('')
+          : '<p class="empty">Belum ada dokumen.</p>';
+      })
+      .catch(() => {
+        latestDokumen.innerHTML = '<p class="empty">Gagal memuat dokumen.</p>';
+      });
+  }
+
   // Landing: testimoni yang sudah publish + form kirim testimoni (masuk sebagai "menunggu")
   const testimoniList = document.getElementById('testimoni-list');
   if (testimoniList) {

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pojok Informasi — Warta</title>
+  <meta name="description" content="Arsip dokumen dan pengumuman resmi: SK, surat edaran, laporan.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">Warta<span>.</span></a>
+      <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false" aria-controls="nav">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <nav class="nav" id="nav">
+        <a href="/">Beranda</a>
+        <a href="/#tentang">Tentang</a>
+        <a href="/berita.html">Berita</a>
+        <a href="/galeri.html">Galeri</a>
+        <a href="/informasi.html" class="active">Informasi</a>
+        <a href="/#kontak">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Pojok informasi</span>
+          <h1>Dokumen &amp; pengumuman resmi</h1>
+        </div>
+      </div>
+
+      <form class="search-bar" id="dokumen-search" role="search">
+        <label for="search" class="sr-only">Cari dokumen</label>
+        <input class="input" type="search" id="search" placeholder="Cari nomor, judul, atau ringkasan..." autocomplete="off">
+        <label for="jenis" class="sr-only">Jenis dokumen</label>
+        <select class="input" id="jenis">
+          <option value="">Semua jenis</option>
+        </select>
+      </form>
+
+      <p class="muted doc-count" id="dokumen-count" aria-live="polite"></p>
+      <div class="doc-list" id="dokumen-list">
+        <p class="loading">Memuat dokumen...</p>
+      </div>
+      <nav class="pager" id="pager" aria-label="Halaman dokumen" hidden></nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© <span data-year></span> Warta. Semua hak dilindungi.</span>
+      <a href="/admin/login.html">Admin</a>
+    </div>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/informasi.js"></script>
+</body>
+</html>

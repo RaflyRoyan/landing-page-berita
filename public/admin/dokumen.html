@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Pojok Informasi — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="dokumen" data-title="Pojok Informasi">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <div class="alert" id="dokumen-alert" role="status" hidden></div>
+
+      <div class="form-layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Daftar Dokumen</h2>
+              <p class="muted panel-sub" id="dokumen-count"></p>
+            </div>
+          </div>
+
+          <form class="toolbar" id="dokumen-filter" role="search">
+            <label for="filter-q" class="sr-only">Cari dokumen</label>
+            <input class="input" type="search" id="filter-q" placeholder="Cari nomor, judul, atau ringkasan..." autocomplete="off">
+            <label for="filter-jenis" class="sr-only">Jenis</label>
+            <select class="input" id="filter-jenis">
+              <option value="">Semua jenis</option>
+            </select>
+            <label for="filter-status" class="sr-only">Status</label>
+            <select class="input" id="filter-status">
+              <option value="">Semua status</option>
+              <option value="publish">Publish</option>
+              <option value="draft">Draft</option>
+            </select>
+          </form>
+
+          <div class="table-wrap">
+            <table class="table" id="dokumen-table">
+              <thead>
+                <tr>
+                  <th>Dokumen</th>
+                  <th>Status</th>
+                  <th class="hide-sm">Tanggal</th>
+                  <th><span class="sr-only">Aksi</span></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel form-side">
+          <h2 class="panel-title" id="dokumen-form-title">Tambah Dokumen</h2>
+          <div class="alert alert-error" id="form-alert" role="alert" hidden></div>
+          <form id="dokumen-form">
+            <input type="hidden" name="id">
+            <input type="hidden" name="file_id">
+            <input type="hidden" name="file_tipe">
+
+            <div class="field">
+              <label for="d-nomor">Nomor <span class="muted">(opsional)</span></label>
+              <input id="d-nomor" name="nomor" type="text" maxlength="100" placeholder="mis. SK No. 29/SK-RT/V/08/04/2026">
+            </div>
+            <div class="field">
+              <label for="d-judul">Judul</label>
+              <input id="d-judul" name="judul" type="text" required maxlength="200">
+            </div>
+            <div class="field">
+              <label for="d-jenis">Jenis</label>
+              <select id="d-jenis" name="jenis" required></select>
+            </div>
+            <div class="field">
+              <label for="d-tanggal">Tanggal dokumen</label>
+              <input id="d-tanggal" name="tanggal_dokumen" type="date" required>
+            </div>
+            <div class="field">
+              <label for="d-ringkasan">Ringkasan <span class="muted">(opsional)</span></label>
+              <textarea id="d-ringkasan" name="ringkasan" rows="3" style="min-height: 80px;" maxlength="500"></textarea>
+            </div>
+            <div class="field">
+              <label for="d-file">File</label>
+              <input id="d-file" type="file" accept="application/pdf,image/*">
+              <small class="muted">PDF maks. 4 MB, atau gambar (dikompres otomatis).</small>
+              <p class="file-current" id="d-file-current" hidden></p>
+            </div>
+            <div class="field">
+              <label for="d-status">Status</label>
+              <select id="d-status" name="status">
+                <option value="draft">Draft</option>
+                <option value="publish">Publish</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="submit" id="dokumen-submit">Simpan</button>
+              <button class="btn btn-ghost" type="button" id="dokumen-cancel" hidden>Batal</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-dokumen.js"></script>
+</body>
+</html>
