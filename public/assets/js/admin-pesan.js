@@ -1,7 +1,7 @@
 /* Pesan masuk dari form kontak (admin/pesan.html, buka langsung: ?id=). */
 (function () {
   if (!window.Admin) return;
-  const { showAlert, icon, loadBadgeData, setBadge } = window.Admin;
+  const { showAlert, icon, loadBadgeData, setBadge, waNumber } = window.Admin;
   const { escapeHtml } = window.Util;
   const API = window.API;
 
@@ -21,14 +21,6 @@
     const d = new Date(value);
     if (Number.isNaN(d.getTime())) return '';
     return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-  }
-
-  // Nomor Indonesia → format wa.me (08xx / 8xx / +62xx → 62xx). Return '' jika tidak valid.
-  function waNumber(telepon) {
-    let digits = String(telepon || '').replace(/\D/g, '');
-    if (digits.startsWith('0')) digits = '62' + digits.slice(1);
-    else if (digits.startsWith('8')) digits = '62' + digits;
-    return digits.length >= 9 ? digits : '';
   }
 
   function updateBadge() {

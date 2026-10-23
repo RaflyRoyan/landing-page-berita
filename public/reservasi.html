@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reservasi Kunjungan — Warta</title>
+  <meta name="description" content="Reservasi kunjungan belajar Kelola Lingkungan: pilih tanggal, jam mulai, dan durasi yang masih kosong.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">Warta<span>.</span></a>
+      <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false" aria-controls="nav">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <nav class="nav" id="nav">
+        <a href="/">Beranda</a>
+        <a href="/#tentang">Tentang</a>
+        <a href="/berita.html">Berita</a>
+        <a href="/galeri.html">Galeri</a>
+        <a href="/informasi.html">Informasi</a>
+        <a href="/reservasi.html" class="active">Reservasi</a>
+        <a href="/#kontak">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section rsv-page">
+    <div class="container">
+      <header class="rsv-head">
+        <div>
+          <span class="eyebrow">RT 03 · RW 07 · Kel. Sukamaju · Surabaya</span>
+          <h1>Belajar Bareng Kelola Lingkungan</h1>
+          <p class="muted">Reservasi kunjungan belajar. Pilih tanggal, jam mulai, dan durasi yang masih kosong, isi data rombongan, lalu konfirmasi dikirim ke WhatsApp Anda setelah disetujui Ketua RT.</p>
+        </div>
+        <dl class="rsv-info">
+          <div><dt>Hari buka</dt><dd>Senin–Sabtu</dd></div>
+          <div><dt>Jam</dt><dd>08.00–16.00 WIB</dd></div>
+          <div><dt>Durasi</dt><dd>60 / 90 / 120 menit</dd></div>
+        </dl>
+      </header>
+
+      <p class="rsv-live"><span class="rsv-live-dot" aria-hidden="true"></span><span id="rsv-live-text">Memuat jadwal...</span></p>
+      <div class="alert" id="rsv-alert" role="alert" hidden></div>
+
+      <div class="rsv-grid">
+        <div class="rsv-col">
+          <section class="panel">
+            <h2 class="rsv-step"><span>1</span>Pilih tanggal</h2>
+            <div class="cal" id="rsv-calendar"><p class="loading">Memuat kalender...</p></div>
+            <ul class="cal-legend">
+              <li><i class="cal-key cal-kosong"></i>Kosong</li>
+              <li><i class="cal-key cal-sebagian"></i>Sebagian terisi</li>
+              <li><i class="cal-key cal-penuh"></i>Penuh</li>
+              <li><i class="cal-key cal-luar"></i>Libur / belum dibuka</li>
+            </ul>
+            <p class="muted rsv-small" id="rsv-periode"></p>
+          </section>
+
+          <section class="panel">
+            <h2 class="rsv-substep">Cek status reservasi</h2>
+            <form class="rsv-cek" id="rsv-cek-form">
+              <label for="rsv-kode" class="sr-only">Kode reservasi</label>
+              <input class="input" id="rsv-kode" name="kode" type="text" placeholder="RSV-XXXXX" maxlength="9" autocomplete="off" required>
+              <button class="btn btn-outline" type="submit">Cek</button>
+            </form>
+            <div id="rsv-cek-hasil" class="rsv-cek-hasil" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section class="panel rsv-col">
+          <h2 class="rsv-step"><span>2</span>Pilih jam</h2>
+          <p class="rsv-tanggal" id="rsv-tanggal">Pilih tanggal di kalender dulu.</p>
+          <div id="rsv-jam" hidden>
+            <fieldset class="rsv-durasi">
+              <legend>Durasi</legend>
+              <label><input type="radio" name="durasi" value="60" checked> 60 menit</label>
+              <label><input type="radio" name="durasi" value="90"> 90 menit</label>
+              <label><input type="radio" name="durasi" value="120"> 120 menit</label>
+            </fieldset>
+            <div class="tl" id="rsv-timeline"></div>
+            <p class="rsv-label">Jam mulai</p>
+            <div class="rsv-slots" id="rsv-slots" role="group" aria-label="Jam mulai"></div>
+          </div>
+          <div class="rsv-pilihan">
+            <span class="muted">Jadwal dipilih</span>
+            <strong id="rsv-pilihan-text">Belum ada</strong>
+          </div>
+        </section>
+
+        <section class="panel rsv-col">
+          <h2 class="rsv-step"><span>3</span>Data rombongan</h2>
+          <form id="rsv-form" novalidate>
+            <div class="field">
+              <label for="r-organisasi">Nama organisasi</label>
+              <input id="r-organisasi" name="organisasi" type="text" required maxlength="150" placeholder="mis. SMPN 12 Surabaya">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="r-pic">Nama PIC</label>
+                <input id="r-pic" name="nama_pic" type="text" required maxlength="100" autocomplete="name" placeholder="Penanggung jawab rombongan">
+              </div>
+              <div class="field">
+                <label for="r-jumlah">Jumlah yang hadir</label>
+                <input id="r-jumlah" name="jumlah" type="number" required min="1" max="200" step="1" placeholder="Jumlah orang">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="r-telepon">No. telepon / WhatsApp PIC</label>
+                <input id="r-telepon" name="telepon" type="tel" required maxlength="20" autocomplete="tel" placeholder="08xx xxxx xxxx">
+              </div>
+              <div class="field">
+                <label for="r-email">Email PIC</label>
+                <input id="r-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="nama@instansi.id">
+              </div>
+            </div>
+            <div class="field">
+              <label for="r-sumber">Sumber info</label>
+              <select id="r-sumber" name="sumber_info">
+                <option value="">Dari mana Anda tahu program ini?</option>
+                <option>Instagram</option>
+                <option>WhatsApp</option>
+                <option>Teman / kenalan</option>
+                <option>Sekolah / instansi</option>
+                <option>Kelurahan / kecamatan</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="r-surat">Surat permohonan kunjungan <span class="muted">(opsional)</span></label>
+              <input id="r-surat" type="file" accept="application/pdf,image/jpeg,image/png">
+              <small class="muted">Ditujukan kepada Ketua RT 03 RW 07 Kel. Sukamaju. Format PDF, JPG, atau PNG, maksimal 4 MB. Boleh menyusul lewat WhatsApp admin.</small>
+            </div>
+            <!-- Honeypot anti-spam: disembunyikan dari pengunjung, hanya diisi bot -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="r-website">Website</label>
+              <input id="r-website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="alert alert-error" id="rsv-form-alert" role="alert" hidden></div>
+            <button class="btn rsv-submit" type="submit" id="rsv-submit">Kirim Reservasi</button>
+            <p class="muted rsv-small">Waktu daftar dicatat otomatis. Setelah disetujui Ketua RT, konfirmasi dikirim ke WhatsApp PIC dari nomor admin 0812-0000-0000.</p>
+          </form>
+
+          <div class="rsv-sukses" id="rsv-sukses" hidden>
+            <p class="eyebrow">Reservasi terkirim</p>
+            <p>Simpan kode berikut untuk mengecek status:</p>
+            <p class="rsv-kode-besar" id="rsv-sukses-kode"></p>
+            <p id="rsv-sukses-jadwal"></p>
+            <p class="muted rsv-small">Status: menunggu persetujuan Ketua RT. Konfirmasi dikirim ke WhatsApp PIC.</p>
+            <button class="btn btn-outline" type="button" id="rsv-lagi">Buat reservasi lain</button>
+          </div>
+        </section>
+      </div>
+
+      <p class="rsv-foot muted"><span>Belajar Bareng Kelola Lingkungan · RT 03 RW 07 Kel. Sukamaju, Surabaya</span><span>Admin WhatsApp 0812-0000-0000</span></p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© <span data-year></span> Warta. Semua hak dilindungi.</span>
+      <a href="/admin/login.html">Admin</a>
+    </div>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/reservasi-kalender.js"></script>
+  <script src="/assets/js/reservasi.js"></script>
+</body>
+</html>

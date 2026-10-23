@@ -34,6 +34,7 @@
     star: '<path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>',
     left: '<path d="m15 18-6-6 6-6"/>',
     right: '<path d="m9 18 6-6-6-6"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
     folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   };
 
@@ -48,6 +49,7 @@
       { page: 'galeri', href: '/admin/galeri.html', label: 'Galeri', icon: 'image' },
       { page: 'dokumen', href: '/admin/dokumen.html', label: 'Pojok Informasi', icon: 'folder' },
       { page: 'testimoni', href: '/admin/testimoni.html', label: 'Testimoni', icon: 'quote', badge: 'testimoni' },
+      { page: 'reservasi', href: '/admin/reservasi.html', label: 'Reservasi', icon: 'calendar', badge: 'reservasi' },
       { page: 'pesan', href: '/admin/pesan.html', label: 'Pesan Masuk', icon: 'mail', badge: 'pesan' },
     ] },
     { title: 'Master', items: [
@@ -166,6 +168,14 @@
       </tr>`;
   }
 
+  // Nomor Indonesia → format wa.me (08xx / 8xx / +62xx → 62xx). Return '' jika tidak valid.
+  function waNumber(telepon) {
+    let digits = String(telepon || '').replace(/\D/g, '');
+    if (digits.startsWith('0')) digits = '62' + digits.slice(1);
+    else if (digits.startsWith('8')) digits = '62' + digits;
+    return digits.length >= 9 ? digits : '';
+  }
+
   // Isi ikon pada elemen statis halaman: <span data-icon="plus"></span>
   document.querySelectorAll('[data-icon]').forEach((el) => {
     el.outerHTML = icon(el.dataset.icon);
@@ -241,6 +251,7 @@
   const BADGES = {
     pesan: { endpoint: 'get-pesan', count: (data) => data.filter((p) => p.status === 'baru').length },
     testimoni: { endpoint: 'get-testimoni', count: (data) => data.filter((t) => t.status === 'menunggu').length },
+    reservasi: { endpoint: 'get-reservasi', count: (data) => data.filter((r) => r.status === 'menunggu').length },
   };
 
   function setBadge(name, count) {
@@ -267,5 +278,5 @@
   // Badge tidak penting untuk dimuat; kegagalan (mis. tab belum dibuat) diabaikan di sini
   Object.keys(BADGES).forEach((name) => loadBadgeData(name).catch(() => {}));
 
-  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload, loadBadgeData, setBadge };
+  window.Admin = { icon, showAlert, setFlash, showFlash, beritaRow, prepareUpload, upload, loadBadgeData, setBadge, waNumber };
 })();

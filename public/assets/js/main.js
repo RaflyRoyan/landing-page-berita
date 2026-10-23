@@ -90,6 +90,49 @@
       });
   }
 
+  // Landing: kalender reservasi (hanya melihat jadwal terisi; pemesanan di reservasi.html)
+  const landingCal = document.getElementById('landing-calendar');
+  if (landingCal && window.Reservasi) {
+    const R = window.Reservasi;
+    const detail = document.getElementById('landing-reservasi-detail');
+    let jadwal = null;
+    let month = '';
+    let selected = '';
+
+    const renderLanding = () => {
+      R.renderCalendar(landingCal, {
+        config: jadwal.config,
+        byDate: jadwal.byDate,
+        month,
+        selected,
+        onMonth: (ym) => {
+          month = ym;
+          renderLanding();
+        },
+        onSelect: (ymd) => {
+          selected = ymd;
+          renderLanding();
+        },
+      });
+      if (!selected) return;
+      detail.innerHTML = `
+        <p class="rsv-teaser-date"><strong>${escapeHtml(R.fmtTanggal(selected))}</strong></p>
+        <div class="tl" id="landing-timeline"></div>
+        <a class="btn btn-sm" href="/reservasi.html?tanggal=${encodeURIComponent(selected)}">Reservasi tanggal ini →</a>`;
+      R.renderTimeline(document.getElementById('landing-timeline'), jadwal.config, jadwal.byDate[selected]);
+    };
+
+    R.load()
+      .then((data) => {
+        jadwal = data;
+        month = data.config.mulai.slice(0, 7);
+        renderLanding();
+      })
+      .catch(() => {
+        landingCal.innerHTML = '<p class="empty">Jadwal reservasi belum bisa dimuat.</p>';
+      });
+  }
+
   // Satu dokumen Pojok Informasi, dipakai landing dan informasi.html
   function dokumenItem(d) {
     return `

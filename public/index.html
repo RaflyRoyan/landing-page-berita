@@ -23,6 +23,7 @@
         <a href="/berita.html">Berita</a>
         <a href="/galeri.html">Galeri</a>
         <a href="/informasi.html">Informasi</a>
+        <a href="/reservasi.html">Reservasi</a>
         <a href="#kontak">Kontak</a>
       </nav>
     </div>
@@ -84,6 +85,64 @@
         </div>
         <div class="news-grid" id="latest-news">
           <p class="loading">Memuat berita...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="kampung-pancasila">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Kampung Pancasila</span>
+            <h2 id="kp-wilayah">RW 07 Kelurahan Sukamaju</h2>
+            <p class="muted">Program Kampung Pancasila Pemerintah Kota Surabaya mengajak warga menghidupkan gotong royong dan menyelesaikan masalah bersama di tingkat RT dan RW, melalui empat pilar: lingkungan, kemasyarakatan, ekonomi, dan sosial budaya.</p>
+          </div>
+        </div>
+        <p class="kp-note"><span class="badge badge-draft">Data contoh</span> <span>Capaian <span id="kp-periode">Januari – Oktober 2026</span>. Angka di bawah masih contoh dan akan diganti dengan data RW.</span></p>
+
+        <div class="kp-stats" id="kp-stats"></div>
+        <div class="kp-pilar-grid" id="kp-pilar"></div>
+
+        <div class="kp-charts">
+          <figure class="kp-chart">
+            <figcaption><strong>Kegiatan per bulan</strong><span class="muted">Jumlah kegiatan semua pilar</span></figcaption>
+            <div class="kp-chart-box" id="kp-chart-kegiatan"><div class="kp-tooltip" role="status" hidden></div></div>
+            <details><summary>Lihat tabel data</summary><table class="table kp-table" id="kp-table-kegiatan"></table></details>
+          </figure>
+          <figure class="kp-chart">
+            <figcaption><strong>Sampah terpilah per bulan</strong><span class="muted">Kilogram, dari bank sampah RW</span></figcaption>
+            <div class="kp-chart-box" id="kp-chart-sampah"><div class="kp-tooltip" role="status" hidden></div></div>
+            <details><summary>Lihat tabel data</summary><table class="table kp-table" id="kp-table-sampah"></table></details>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reservasi" style="background: var(--color-surface); border-block: 1px solid var(--color-border);">
+      <div class="container rsv-teaser">
+        <div>
+          <span class="eyebrow">Reservasi kunjungan</span>
+          <h2>Belajar Bareng Kelola Lingkungan</h2>
+          <p class="muted">Sekolah, kampus, atau komunitas bisa berkunjung untuk belajar bank sampah, urban farming, dan pengelolaan lingkungan di RW kami. Lihat jadwal yang sudah terisi di kalender, lalu pilih tanggal dan jam yang masih kosong.</p>
+          <dl class="rsv-info">
+            <div><dt>Hari buka</dt><dd>Senin–Sabtu</dd></div>
+            <div><dt>Jam</dt><dd>08.00–16.00 WIB</dd></div>
+            <div><dt>Durasi</dt><dd>60 / 90 / 120 menit</dd></div>
+          </dl>
+          <a class="btn" href="/reservasi.html">Reservasi sekarang</a>
+        </div>
+
+        <div class="panel rsv-teaser-panel">
+          <div class="cal" id="landing-calendar"><p class="loading">Memuat jadwal...</p></div>
+          <ul class="cal-legend">
+            <li><i class="cal-key cal-kosong"></i>Kosong</li>
+            <li><i class="cal-key cal-sebagian"></i>Sebagian terisi</li>
+            <li><i class="cal-key cal-penuh"></i>Penuh</li>
+            <li><i class="cal-key cal-luar"></i>Libur / belum dibuka</li>
+          </ul>
+          <div class="rsv-teaser-detail" id="landing-reservasi-detail" aria-live="polite">
+            <p class="muted rsv-small">Pilih tanggal untuk melihat jam yang sudah terisi.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -226,6 +285,8 @@
   </footer>
 
   <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/reservasi-kalender.js"></script>
   <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/kampung-pancasila.js"></script>
 </body>
 </html>

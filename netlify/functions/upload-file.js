@@ -2,7 +2,7 @@ const { handleUpload } = require('./utils/upload');
 const { createHandler } = require('./utils/crud');
 const { json, parseBody } = require('./utils/http');
 
-// POST /api/upload-file  { folder: 'berita'|'galeri'|'banner'|'dokumen', filename, mimeType, data }
+// POST /api/upload-file  { folder: 'berita'|'galeri'|'banner'|'dokumen'|'testimoni'|'reservasi', filename, mimeType, data }
 exports.handler = createHandler({
   methods: ['POST'],
   run: async ({ event }) => {

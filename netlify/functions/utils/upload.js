@@ -12,6 +12,8 @@ const FOLDERS = {
   banner: { env: 'DRIVE_FOLDER_BANNER_ID', types: IMAGE_TYPES },
   dokumen: { env: 'DRIVE_FOLDER_DOKUMEN_ID', types: [...IMAGE_TYPES, 'application/pdf'] },
   testimoni: { env: 'DRIVE_FOLDER_TESTIMONI_ID', types: IMAGE_TYPES },
+  // Surat permohonan kunjungan, diunggah pengunjung lewat create-reservasi (bukan upload-file)
+  reservasi: { env: 'DRIVE_FOLDER_RESERVASI_ID', types: ['image/jpeg', 'image/png', 'application/pdf'] },
 };
 
 // body = { filename, mimeType, data (base64 / data URL) }. Return { fileId, url, viewUrl }.
