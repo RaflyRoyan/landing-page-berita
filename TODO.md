@@ -58,13 +58,9 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 - [x] Uji, update README & CLAUDE.md
 - [x] Commit & push
 
-## 5. Konten landing page lewat admin
+## 5. Konten landing page
 
-- [ ] Desain: tab Sheets `pengaturan` (key → value) untuk hero (judul, tagline, gambar), tentang (profil, visi, misi, fokus), kontak (telepon, email, alamat, jam, WhatsApp, sosmed)
-- [ ] Function baca (publik, di-cache) + simpan (JWT)
-- [ ] Admin: halaman **Pengaturan Situs** dengan tab Hero / Tentang / Kontak, upload gambar hero ke Drive `banner/`
-- [ ] `public/index.html`: isi teks dari API, dengan teks bawaan sebagai cadangan jika API gagal
-- [ ] Uji, update README & CLAUDE.md, commit
+- [x] Diputuskan pemilik (23 Okt 2026): konten hero, tentang, dan kontak tetap **statis** di `public/index.html` (diedit langsung di file), tidak dikelola lewat admin
 
 ## Ditunda
 
