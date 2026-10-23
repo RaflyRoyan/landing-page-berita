@@ -1,4 +1,4 @@
-/* Script bersama: navigasi mobile, tahun footer, render card berita, 3 berita terbaru di landing. */
+/* Script bersama: navigasi mobile, tahun footer, render card berita & album, isi seksi landing. */
 (function () {
   const { escapeHtml, formatDate } = window.Util;
 
@@ -53,6 +53,40 @@
       })
       .catch(() => {
         latest.innerHTML = '<p class="empty">Gagal memuat berita.</p>';
+      });
+  }
+
+  function albumCard(g) {
+    const img = g.sampul_url
+      ? `<img class="card-img" src="${escapeHtml(g.sampul_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+      : '<div class="card-img" aria-hidden="true"></div>';
+    return `
+      <a class="card" href="/galeri.html?id=${encodeURIComponent(g.id)}">
+        ${img}
+        <div class="card-body">
+          <div class="meta">
+            <span class="badge">${escapeHtml(g.jumlah_foto)} foto</span>
+            <span>${escapeHtml(formatDate(g.tanggal_kegiatan))}</span>
+          </div>
+          <h3>${escapeHtml(g.judul)}</h3>
+          ${g.keterangan ? `<p class="card-clamp">${escapeHtml(g.keterangan)}</p>` : ''}
+        </div>
+      </a>`;
+  }
+
+  window.renderAlbumCard = albumCard;
+
+  // Landing: 6 album galeri terbaru
+  const latestGaleri = document.getElementById('latest-galeri');
+  if (latestGaleri) {
+    window.API.get('get-galeri')
+      .then(({ data }) => {
+        latestGaleri.innerHTML = data.length
+          ? data.slice(0, 6).map(albumCard).join('')
+          : '<p class="empty">Belum ada album kegiatan.</p>';
+      })
+      .catch(() => {
+        latestGaleri.innerHTML = '<p class="empty">Gagal memuat galeri.</p>';
       });
   }
 

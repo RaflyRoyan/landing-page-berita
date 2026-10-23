@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Tambah Album — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="galeri" data-title="Tambah Album">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <a class="back-link" href="/admin/galeri.html">← Kembali ke daftar album</a>
+      <div class="alert alert-error" id="form-alert" role="alert" hidden></div>
+
+      <form id="galeri-form">
+        <fieldset class="form-layout">
+          <section class="panel">
+            <div class="field">
+              <label for="judul">Judul kegiatan</label>
+              <input id="judul" name="judul" type="text" required maxlength="150" placeholder="mis. Kerja Bakti Bersih Saluran">
+            </div>
+
+            <div class="field">
+              <label for="keterangan">Keterangan <span class="muted">(opsional)</span></label>
+              <textarea id="keterangan" name="keterangan" rows="3" style="min-height: 80px;" maxlength="1000"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="foto">Foto</label>
+              <input id="foto" type="file" accept="image/*" multiple>
+              <small class="muted">Pilih beberapa foto sekaligus (maks. 20 per kali pilih). Gambar dikompres otomatis (maks. lebar 1600px, JPEG) dan diunggah saat disimpan.</small>
+            </div>
+
+            <p class="muted panel-sub" id="foto-count"></p>
+            <ul class="photo-grid" id="photo-grid"></ul>
+          </section>
+
+          <aside class="panel form-side">
+            <div class="field">
+              <label for="tanggal_kegiatan">Tanggal kegiatan</label>
+              <input id="tanggal_kegiatan" name="tanggal_kegiatan" type="date" required>
+            </div>
+
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="draft">Draft</option>
+                <option value="publish">Publish</option>
+              </select>
+            </div>
+
+            <p class="muted form-note">Foto bertanda ★ menjadi sampul album. Urutan foto di sini = urutan tampil di situs.</p>
+
+            <div class="form-actions">
+              <button class="btn" type="submit" id="submit-btn">Simpan</button>
+              <a class="btn btn-ghost" href="/admin/galeri.html">Batal</a>
+            </div>
+          </aside>
+        </fieldset>
+      </form>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-galeri-form.js"></script>
+</body>
+</html>

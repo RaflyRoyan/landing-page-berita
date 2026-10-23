@@ -1,0 +1,1 @@
+exports.handler = require('./utils/galeri').resource.create;

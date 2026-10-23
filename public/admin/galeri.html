@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Galeri — Warta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="admin-body" data-page="galeri" data-title="Galeri">
+  <aside id="admin-sidebar"></aside>
+
+  <div class="admin-main">
+    <header id="admin-topbar"></header>
+
+    <main class="admin-content">
+      <div class="alert" id="list-alert" role="status" hidden></div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Album Kegiatan</h2>
+            <p class="muted panel-sub" id="galeri-count"></p>
+          </div>
+          <a class="btn btn-sm" href="/admin/galeri-form.html"><span data-icon="plus"></span>Tambah Album</a>
+        </div>
+
+        <form class="toolbar" id="filter-form" role="search">
+          <label for="filter-q" class="sr-only">Cari album</label>
+          <input class="input" type="search" id="filter-q" placeholder="Cari judul atau keterangan..." autocomplete="off">
+          <label for="filter-status" class="sr-only">Status</label>
+          <select class="input" id="filter-status">
+            <option value="">Semua status</option>
+            <option value="publish">Publish</option>
+            <option value="draft">Draft</option>
+          </select>
+        </form>
+
+        <div class="table-wrap">
+          <table class="table" id="galeri-table">
+            <thead>
+              <tr>
+                <th class="hide-sm"><span class="sr-only">Sampul</span></th>
+                <th>Album</th>
+                <th>Status</th>
+                <th class="hide-sm">Tanggal kegiatan</th>
+                <th><span class="sr-only">Aksi</span></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/admin-layout.js"></script>
+  <script src="/assets/js/admin-galeri.js"></script>
+</body>
+</html>

@@ -1,8 +1,9 @@
 const { Readable } = require('stream');
 const { getDriveClient } = require('./google-auth');
 
-function thumbnailUrl(fileId) {
-  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+// size = lebar maksimum dalam piksel
+function thumbnailUrl(fileId, size = 1200) {
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`;
 }
 
 // Halaman pratinjau Drive (untuk PDF / dokumen)

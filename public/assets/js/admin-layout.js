@@ -30,6 +30,10 @@
     unread: '<circle cx="12" cy="12" r="4"/>',
     quote: '<path d="M7 7h4v4c0 3-1.5 5-4 6"/><path d="M14 7h4v4c0 3-1.5 5-4 6"/>',
     x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>',
+    star: '<path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>',
+    left: '<path d="m15 18-6-6 6-6"/>',
+    right: '<path d="m9 18 6-6-6-6"/>',
   };
 
   function icon(name) {
@@ -40,6 +44,7 @@
     { items: [
       { page: 'dashboard', href: '/admin/dashboard.html', label: 'Dashboard', icon: 'dashboard' },
       { page: 'berita', href: '/admin/berita.html', label: 'Berita', icon: 'berita' },
+      { page: 'galeri', href: '/admin/galeri.html', label: 'Galeri', icon: 'image' },
       { page: 'testimoni', href: '/admin/testimoni.html', label: 'Testimoni', icon: 'quote', badge: 'testimoni' },
       { page: 'pesan', href: '/admin/pesan.html', label: 'Pesan Masuk', icon: 'mail', badge: 'pesan' },
     ] },
