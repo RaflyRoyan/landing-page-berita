@@ -1,4 +1,7 @@
-const { google } = require('googleapis');
+// Paket per-API (bukan "googleapis" penuh yang butuh ±4 detik untuk dimuat)
+const { OAuth2Client } = require('google-auth-library');
+const { sheets } = require('@googleapis/sheets');
+const { drive } = require('@googleapis/drive');
 
 let oauthClient = null;
 let sheetsClient = null;
@@ -15,7 +18,7 @@ function requireEnv(name) {
 function getOAuthClient() {
   if (oauthClient) return oauthClient;
 
-  oauthClient = new google.auth.OAuth2(
+  oauthClient = new OAuth2Client(
     requireEnv('GOOGLE_OAUTH_CLIENT_ID'),
     requireEnv('GOOGLE_OAUTH_CLIENT_SECRET')
   );
@@ -25,13 +28,13 @@ function getOAuthClient() {
 
 function getSheetsClient() {
   if (sheetsClient) return sheetsClient;
-  sheetsClient = google.sheets({ version: 'v4', auth: getOAuthClient() });
+  sheetsClient = sheets({ version: 'v4', auth: getOAuthClient() });
   return sheetsClient;
 }
 
 function getDriveClient() {
   if (driveClient) return driveClient;
-  driveClient = google.drive({ version: 'v3', auth: getOAuthClient() });
+  driveClient = drive({ version: 'v3', auth: getOAuthClient() });
   return driveClient;
 }
 
