@@ -15,10 +15,13 @@ landing-page-berita/
 │   ├── index.html          # landing page
 │   ├── berita.html         # daftar berita + pencarian
 │   ├── detail.html         # detail berita (?slug=)
+│   ├── galeri.html         # album kegiatan; ?id= satu album + lightbox foto
 │   ├── admin/login.html
 │   ├── admin/dashboard.html     # ringkasan + berita terbaru
 │   ├── admin/berita.html        # daftar berita (cari, filter, hapus)
 │   ├── admin/berita-form.html   # tambah / edit (?id=) berita
+│   ├── admin/galeri.html        # daftar album kegiatan
+│   ├── admin/galeri-form.html   # tambah / edit (?id=) album, upload banyak foto
 │   ├── admin/kategori.html      # master kategori
 │   ├── admin/pesan.html         # pesan masuk dari form kontak
 │   ├── admin/testimoni.html     # testimoni: setujui kiriman pengunjung, tulis sendiri (draft/publish)
@@ -39,6 +42,8 @@ landing-page-berita/
 │   ├── get-testimoni.js    # GET    /api/get-testimoni        (publik: hanya publish; admin: semua)
 │   ├── submit-testimoni.js # POST   /api/submit-testimoni     (publik, masuk sebagai "menunggu")
 │   ├── create-/update-/delete-testimoni.js                    (JWT)
+│   ├── get-galeri.js       # GET    /api/get-galeri[?id=]     (publik: hanya publish; admin: semua)
+│   ├── create-/update-/delete-galeri.js                       (JWT)
 │   ├── upload-file.js      # POST   /api/upload-file          (JWT, maks 4MB, folder: berita/galeri/banner/dokumen)
 │   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, lama: sama dengan upload-file folder berita)
 │   ├── login.js            # POST   /api/login
@@ -96,7 +101,14 @@ landing-page-berita/
 
    `status`: `menunggu` (kiriman pengunjung, belum disetujui), `draft`, atau `publish`. Hanya `publish` yang tampil di situs. `sumber`: `admin` atau `pengunjung`. `email` hanya diisi untuk kiriman pengunjung dan tidak pernah ditampilkan.
 
-7. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk bagian "6. Isi `.env`":
+7. Tambah tab baru bernama **`galeri`**, isi **baris 1** (kolom A sampai H):
+
+   | id | judul | keterangan | tanggal_kegiatan | foto_ids | sampul_id | status | tanggal |
+   |----|-------|------------|------------------|----------|-----------|--------|---------|
+
+   Satu baris = satu album kegiatan. `foto_ids` berisi id file Drive dipisah koma (urutan = urutan tampil), `sampul_id` salah satu di antaranya. `tanggal_kegiatan` berformat `YYYY-MM-DD`. Semua kolom diisi lewat admin.
+
+8. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk bagian "6. Isi `.env`":
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_DI_SINI`**`/edit`
 
 Catatan:
@@ -177,7 +189,7 @@ Isi semua variabel di `.env`:
 | `GOOGLE_OAUTH_CLIENT_SECRET` | Langkah 4 | OAuth Client secret |
 | `GOOGLE_REFRESH_TOKEN` | Langkah 5 | Refresh token dari OAuth Playground |
 | `JWT_SECRET` | Buat sendiri | String acak panjang, lihat perintah di bawah |
-| `DRIVE_FOLDER_GALERI_ID`, `DRIVE_FOLDER_BANNER_ID`, `DRIVE_FOLDER_DOKUMEN_ID`, `DRIVE_FOLDER_TESTIMONI_ID` | Langkah 3 | Opsional. ID folder Drive `galeri`, `banner`, `dokumen`, dan `testimoni`; baru diperlukan saat modul yang memakainya aktif. Folder `dokumen` dan `testimoni` dibuat di samping `berita/`. Tanpa `DRIVE_FOLDER_TESTIMONI_ID`, testimoni tetap bisa dibuat, hanya tanpa foto |
+| `DRIVE_FOLDER_GALERI_ID`, `DRIVE_FOLDER_BANNER_ID`, `DRIVE_FOLDER_DOKUMEN_ID`, `DRIVE_FOLDER_TESTIMONI_ID` | Langkah 3 | Opsional. ID folder Drive `galeri`, `banner`, `dokumen`, dan `testimoni`; baru diperlukan saat modul yang memakainya aktif. Folder `dokumen` dan `testimoni` dibuat di samping `berita/`. Tanpa `DRIVE_FOLDER_TESTIMONI_ID`, testimoni tetap bisa dibuat, hanya tanpa foto. `DRIVE_FOLDER_GALERI_ID` wajib untuk menambah album galeri |
 
 Buat `JWT_SECRET`:
 
@@ -215,6 +227,8 @@ Login di <http://localhost:8888/admin/login.html>. Setelah login, admin punya si
 | Dashboard | `/admin/dashboard.html` | Ringkasan (total, publish, draft, kategori), 5 berita terbaru, tombol **+ Tambah Berita** |
 | Berita | `/admin/berita.html` | Semua berita: cari, filter status/kategori, edit, hapus |
 | | `/admin/berita-form.html` | Tambah berita, atau edit dengan `?id=` |
+| Galeri | `/admin/galeri.html` | Album kegiatan: cari, filter status, edit, hapus |
+| | `/admin/galeri-form.html` | Tambah album, atau edit dengan `?id=`: pilih banyak foto sekaligus, geser urutan, pilih sampul (★), hapus foto dari album |
 | Testimoni | `/admin/testimoni.html` | Badge jumlah yang menunggu persetujuan. Kiriman pengunjung: **Setujui** (tampil di situs) / **Tolak** (dihapus). Testimoni buatan admin: draft / publish, foto opsional, urutan tampil |
 | Pesan Masuk | `/admin/pesan.html` | Pesan dari form kontak: badge jumlah pesan baru, buka (otomatis ditandai dibaca), balas via email / WhatsApp, tandai belum dibaca, hapus |
 | Master → Kategori | `/admin/kategori.html` | Tambah, ganti nama, dan hapus kategori |
@@ -245,13 +259,14 @@ npx netlify deploy --prod
 | `403 insufficient authentication scopes` / `Request had insufficient authentication scopes` | Refresh token dibuat tanpa scope `spreadsheets` atau `drive`. Ulangi langkah 5 dengan kedua scope. |
 | `403 The caller does not have permission` di Sheets | Spreadsheet bukan milik akun yang login di Playground. Pakai akun yang sama, atau share spreadsheet ke akun itu sebagai Editor. |
 | `404 File not found` saat upload | `DRIVE_FOLDER_ID` salah atau folder bukan milik akun yang sama. |
-| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` / `pesan` / `testimoni` persis. |
+| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` / `pesan` / `testimoni` / `galeri` persis. |
 | `redirect_uri_mismatch` | Redirect URI di OAuth client belum `https://developers.google.com/oauthplayground`. |
 
 ## Catatan
 
 - Form kontak dan form kirim testimoni punya anti-spam sederhana: kolom tersembunyi (*honeypot*) untuk bot, dan maksimal 3 kiriman per email dalam 10 menit. Pesan hanya bisa dibaca admin.
 - Halaman depan menampilkan maksimal 6 testimoni ber-status publish (urut `urutan`, lalu terbaru). Pengunjung tidak bisa mengunggah foto; foto ditambahkan admin.
+- Galeri: halaman depan menampilkan 6 album publish terbaru (urut tanggal kegiatan). Satu album maksimal 200 foto; admin bisa memilih maksimal 20 foto per kali pilih, lalu foto diunggah satu per satu saat disimpan. Menghapus album atau foto dari album **tidak** menghapus file di Google Drive.
 - Endpoint `get-berita` di-cache 60 detik (`Cache-Control: public, max-age=60`), jadi berita baru bisa butuh hingga 1 menit untuk muncul di halaman publik.
 - Gambar dikompres di browser (lebar maks 1600px, JPEG kualitas 0.8) sebelum diunggah; server menolak file > 4 MB (batas body request Netlify ±6 MB, base64 menambah ±33%). Folder `dokumen` juga menerima PDF.
 - Token login berlaku 8 jam. Setelah kedaluwarsa, admin otomatis diarahkan ke halaman login.

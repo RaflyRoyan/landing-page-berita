@@ -44,6 +44,11 @@ Sheet schemas (tab names and headers are lowercase and must match exactly):
   - Admin-written entries via `create-testimoni` get `sumber: admin` and default to `draft`. Approving means `update-testimoni` with `status: publish`; rejecting deletes the entry.
   - Only `publish` rows are public, and `toPublic` strips `email`/`sumber` for non-admins. Admins cannot edit `email`/`sumber` (they are not in `fields`).
   - Sorted by `urutan` (empty last), then newest. The landing page (`#testimoni`, `main.js`) shows up to 6 entries. Photos upload to the folder `testimoni`.
+- `galeri`: `id, judul, keterangan, tanggal_kegiatan, foto_ids, sampul_id, status, tanggal`, handled in `utils/galeri.js`. One row is one activity album.
+  - `foto_ids` is a comma-separated list of Drive file ids in display order (max 200). `prepare` dedupes it, requires at least 1 photo, validates `tanggal_kegiatan` (`YYYY-MM-DD`), and falls back to the first photo when `sampul_id` is not in the list. Photos have no per-photo caption (user's choice).
+  - `toPublic` adds `sampul_url` (w800), `jumlah_foto` and `foto: [{ id, thumb_url (w400), url (w1600) }]`. `thumbnailUrl(id, size)` in `utils/drive.js` takes the width.
+  - Only `publish` rows are public; sorted by `tanggal_kegiatan` desc. The landing page (`#galeri`, `main.js` `renderAlbumCard`) shows 6 albums; `galeri.html` lists all and `galeri.html?id=` shows one album with a vanilla lightbox (`galeri.js`: arrows, Esc, swipe, focus trap).
+  - Admin: `admin/galeri.html` (list) and `admin/galeri-form.html` (multi-select, max 20 per pick; photos are compressed on pick and uploaded one by one to folder `galeri` on save, so a failed save only re-uploads the rest). Deleting an album or photo does not delete Drive files.
 - `kategori`: `id, nama`. This is the category master, managed through `*-kategori` functions and the dashboard's "Master Kategori" panel. `berita.kategori` stores the category **name**, not its id, so public pages need no lookup. Shared rules live in `utils/kategori.js`:
   - names compare case-insensitively;
   - create/update-berita reject names not in the master and store the master's spelling, but update-berita skips the check when the kategori is unchanged, so legacy rows stay editable;
@@ -71,9 +76,10 @@ The 4 MB limit exists because Netlify caps request bodies at ~6 MB and base64 ad
 **Frontend.** Every page loads `assets/js/api.js` first. It defines `window.API` (`get/post/put/del`, which prefix `/api/`) and `window.Util` (`escapeHtml`, `formatDate` in `id-ID`). Then come the page scripts:
 - `main.js`: nav, footer, news cards and the landing page's latest 3 posts
 - `berita.js`: the list/search page and `detail.html?slug=`
+- `galeri.js`: `galeri.html` (album list, `?id=` album + lightbox)
 - `admin-login.js`: the login page
 
-The admin area is one HTML page per menu: `dashboard.html` (stats and recent news), `berita.html` (list), `berita-form.html` (add, or edit with `?id=`), and `kategori.html`.
+The admin area is one HTML page per menu: `dashboard.html` (stats and recent news), `berita.html` (list), `berita-form.html` (add, or edit with `?id=`), `galeri.html` / `galeri-form.html` (same list + form pattern), `testimoni.html`, `pesan.html`, and `kategori.html`.
 - Each page has `<body class="admin-body" data-page data-title>` with an empty `<aside id="admin-sidebar">` and `<header id="admin-topbar">`.
 - `admin-layout.js` loads before the page script. It redirects to login when the token is invalid; otherwise it renders the sidebar and topbar and exposes `window.Admin` (`icon`, `showAlert`, `setFlash`/`showFlash`, `beritaRow`).
 - The menu lives in the `MENU` array in `admin-layout.js`. `<span data-icon="name">` is replaced with an inline SVG.
@@ -89,7 +95,7 @@ The working checklist and build order live in `TODO.md`. Tick items there as the
 The user picked these features from the reference site https://rt08rw04malakajaya.com/ (an RT community site built with Zyro). We will build them one at a time. Brainstorm and design each feature with the user before implementing it. The approach for every module: one Sheets tab, files in Drive if needed, a `get-*`/`create-*`/`update-*`/`delete-*` function set, and a new menu entry in `MENU` in `admin-layout.js`.
 
 1. **Landing page content managed from admin.** The hero (title, tagline, image), Tentang/profil (including visi, misi and fokus), and the contact info (phone, email, alamat, jam operasional, WhatsApp, social links) are currently hardcoded in `public/index.html`. Admins should be able to edit them.
-2. **Galeri Kegiatan.** Activity photo albums: upload to the Drive folder `galeri/`, which already exists. Show them on the landing page ("Yang Baru" and "Galeri Kegiatan") and on a gallery page.
+2. **Galeri Kegiatan.** Done: albums per activity (see the `galeri` schema above). "Yang Baru" from the reference site was dropped; the latest berita and galeri sections cover it.
 3. **Pojok Informasi.** An archive of official documents such as RT decrees (e.g. "SK No. 29/SK-RT/V/08/04/2026"): number, title, date, and a PDF or image file in Drive. Show a public list with paging.
 4. **Testimoni.** Done: visitor submissions need admin approval; admin-written entries use draft/publish (see the `testimoni` schema above).
 5. **Form kontak.** Done: the landing-page form saves to the `pesan` tab, and admins read it in the "Pesan Masuk" inbox (see the `pesan` schema above).

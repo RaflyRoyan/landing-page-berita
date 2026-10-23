@@ -29,7 +29,7 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 - [x] Desain: kiriman pengunjung (menunggu → disetujui admin) + tulisan admin (draft / publish); kolom nama, peran, kutipan, foto opsional, urutan
 - [x] Tab Sheets `testimoni` → **dibuat pemilik di spreadsheet** (header: id, nama, peran, kutipan, foto_id, email, sumber, status, urutan, tanggal)
-- [ ] (Opsional) folder Drive `testimoni/` + env `DRIVE_FOLDER_TESTIMONI_ID` agar admin bisa menambah foto
+- [x] (Opsional) folder Drive `testimoni/` + env `DRIVE_FOLDER_TESTIMONI_ID` agar admin bisa menambah foto
 - [x] Function CRUD admin + `submit-testimoni` publik (anti-spam bersama di `utils/antispam.js`)
 - [x] Admin: halaman Testimoni (setujui / tolak, edit, hapus) + badge menunggu persetujuan
 - [x] Landing: seksi "Kata Mereka" (grid kartu, maks. 6) + form kirim testimoni
@@ -38,11 +38,14 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 ## 3. Galeri Kegiatan
 
-- [ ] Desain: album vs foto lepas, keterangan, tanggal kegiatan, foto sampul, upload banyak foto sekaligus
-- [ ] Tab Sheets galeri + function CRUD; foto ke folder Drive `galeri/`
-- [ ] Admin: halaman Galeri (upload banyak + kompres di browser seperti berita)
-- [ ] Publik: seksi "Yang Baru" di landing + halaman `galeri.html` dengan lightbox
-- [ ] Uji, update README & CLAUDE.md, commit
+- [x] Desain: album per kegiatan (judul, keterangan, tanggal kegiatan, sampul), tanpa keterangan per foto, upload banyak foto sekaligus; "Yang Baru" tidak dibuat terpisah
+- [x] Tab Sheets `galeri` → **dibuat pemilik di spreadsheet** (header: id, judul, keterangan, tanggal_kegiatan, foto_ids, sampul_id, status, tanggal)
+- [x] Env `DRIVE_FOLDER_GALERI_ID` (folder `galeri/` sudah ada) → **diisi pemilik** di `.env` & Netlify
+- [x] Function CRUD `*-galeri`; foto ke folder Drive `galeri/`
+- [x] Admin: halaman Galeri + form album (pilih banyak foto, kompres di browser, urutan, sampul)
+- [x] Publik: seksi "Galeri kegiatan" di landing + halaman `galeri.html` dengan lightbox
+- [x] Uji, update README & CLAUDE.md
+- [x] Commit & push
 
 ## 4. Pojok Informasi
 
