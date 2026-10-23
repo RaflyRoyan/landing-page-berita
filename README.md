@@ -17,6 +17,7 @@ landing-page-berita/
 │   ├── detail.html         # detail berita (?slug=)
 │   ├── galeri.html         # album kegiatan; ?id= satu album + lightbox foto
 │   ├── informasi.html      # pojok informasi: dokumen resmi, cari, filter jenis, 10 per halaman
+│   ├── reservasi.html      # reservasi kunjungan: kalender, jam mulai + durasi, data rombongan, cek status
 │   ├── admin/login.html
 │   ├── admin/dashboard.html     # ringkasan + berita terbaru
 │   ├── admin/berita.html        # daftar berita (cari, filter, hapus)
@@ -24,6 +25,7 @@ landing-page-berita/
 │   ├── admin/galeri.html        # daftar album kegiatan
 │   ├── admin/galeri-form.html   # tambah / edit (?id=) album, upload banyak foto
 │   ├── admin/dokumen.html       # pojok informasi: arsip dokumen (PDF / gambar)
+│   ├── admin/reservasi.html     # reservasi kunjungan: setujui / tolak, konfirmasi WhatsApp
 │   ├── admin/kategori.html      # master kategori
 │   ├── admin/pesan.html         # pesan masuk dari form kontak
 │   ├── admin/testimoni.html     # testimoni: setujui kiriman pengunjung, tulis sendiri (draft/publish)
@@ -48,6 +50,10 @@ landing-page-berita/
 │   ├── create-/update-/delete-galeri.js                       (JWT)
 │   ├── get-dokumen.js      # GET    /api/get-dokumen[?id=]    (publik: hanya publish; admin: semua)
 │   ├── create-/update-/delete-dokumen.js                      (JWT)
+│   ├── jadwal-reservasi.js # GET    /api/jadwal-reservasi     (publik: aturan + jam terisi, tanpa data pribadi)
+│   ├── create-reservasi.js # POST   /api/create-reservasi     (publik, cek bentrok, surat opsional)
+│   ├── cek-reservasi.js    # GET    /api/cek-reservasi?kode=  (publik: status saja)
+│   ├── get-/update-/delete-reservasi.js                       (JWT, admin hanya mengubah status)
 │   ├── upload-file.js      # POST   /api/upload-file          (JWT, maks 4MB, folder: berita/galeri/banner/dokumen)
 │   ├── upload-foto.js      # POST   /api/upload-foto          (JWT, lama: sama dengan upload-file folder berita)
 │   ├── login.js            # POST   /api/login
@@ -119,7 +125,14 @@ landing-page-berita/
 
    Arsip Pojok Informasi. `jenis`: `SK`, `Surat Edaran`, `Pengumuman`, `Laporan`, atau `Lainnya`. `nomor` opsional, tapi jika diisi tidak boleh kembar. `file_tipe`: `pdf` atau `gambar`. Semua kolom diisi lewat admin.
 
-9. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk bagian "6. Isi `.env`":
+9. Tambah tab baru bernama **`reservasi`**, isi **baris 1** (kolom A sampai N):
+
+   | id | kode | tanggal_kunjungan | jam_mulai | durasi | organisasi | nama_pic | jumlah | telepon | email | sumber_info | surat_id | status | tanggal |
+   |----|------|-------------------|-----------|--------|------------|----------|--------|---------|-------|-------------|----------|--------|---------|
+
+   Reservasi kunjungan dari `reservasi.html`. `jam_mulai` berformat `HH:MM`, `durasi` dalam menit (60/90/120), `status`: `menunggu`, `disetujui`, atau `ditolak`. `tanggal` = waktu daftar. Semua kolom diisi otomatis.
+
+10. Ambil **SHEET_ID** dari URL spreadsheet, lalu simpan untuk bagian "6. Isi `.env`":
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_DI_SINI`**`/edit`
 
 Catatan:
@@ -200,7 +213,7 @@ Isi semua variabel di `.env`:
 | `GOOGLE_OAUTH_CLIENT_SECRET` | Langkah 4 | OAuth Client secret |
 | `GOOGLE_REFRESH_TOKEN` | Langkah 5 | Refresh token dari OAuth Playground |
 | `JWT_SECRET` | Buat sendiri | String acak panjang, lihat perintah di bawah |
-| `DRIVE_FOLDER_GALERI_ID`, `DRIVE_FOLDER_BANNER_ID`, `DRIVE_FOLDER_DOKUMEN_ID`, `DRIVE_FOLDER_TESTIMONI_ID` | Langkah 3 | Opsional. ID folder Drive `galeri`, `banner`, `dokumen`, dan `testimoni`; baru diperlukan saat modul yang memakainya aktif. Folder `dokumen` dan `testimoni` dibuat di samping `berita/`. Tanpa `DRIVE_FOLDER_TESTIMONI_ID`, testimoni tetap bisa dibuat, hanya tanpa foto. `DRIVE_FOLDER_GALERI_ID` wajib untuk menambah album galeri, `DRIVE_FOLDER_DOKUMEN_ID` wajib untuk menambah dokumen Pojok Informasi |
+| `DRIVE_FOLDER_GALERI_ID`, `DRIVE_FOLDER_BANNER_ID`, `DRIVE_FOLDER_DOKUMEN_ID`, `DRIVE_FOLDER_TESTIMONI_ID` | Langkah 3 | Opsional. ID folder Drive `galeri`, `banner`, `dokumen`, dan `testimoni`; baru diperlukan saat modul yang memakainya aktif. Folder `dokumen` dan `testimoni` dibuat di samping `berita/`. Tanpa `DRIVE_FOLDER_TESTIMONI_ID`, testimoni tetap bisa dibuat, hanya tanpa foto. `DRIVE_FOLDER_GALERI_ID` wajib untuk menambah album galeri, `DRIVE_FOLDER_DOKUMEN_ID` wajib untuk menambah dokumen Pojok Informasi. `DRIVE_FOLDER_RESERVASI_ID` (folder `reservasi`) untuk surat permohonan kunjungan; tanpa ini reservasi tetap bisa dikirim, hanya tanpa surat |
 
 Buat `JWT_SECRET`:
 
@@ -242,6 +255,7 @@ Login di <http://localhost:8888/admin/login.html>. Setelah login, admin punya si
 | | `/admin/galeri-form.html` | Tambah album, atau edit dengan `?id=`: pilih banyak foto sekaligus, geser urutan, pilih sampul (★), hapus foto dari album |
 | Pojok Informasi | `/admin/dokumen.html` | Arsip dokumen resmi: nomor, judul, jenis, tanggal, ringkasan, file PDF / gambar, draft / publish. Cari dan filter jenis/status |
 | Testimoni | `/admin/testimoni.html` | Badge jumlah yang menunggu persetujuan. Kiriman pengunjung: **Setujui** (tampil di situs) / **Tolak** (dihapus). Testimoni buatan admin: draft / publish, foto opsional, urutan tampil |
+| Reservasi | `/admin/reservasi.html` | Badge jumlah yang menunggu. Filter status dan akan datang / sudah lewat. **Setujui**, **Tolak** (jamnya kosong lagi), **Pulihkan**, hapus, dan tombol WhatsApp berisi pesan konfirmasi sesuai status |
 | Pesan Masuk | `/admin/pesan.html` | Pesan dari form kontak: badge jumlah pesan baru, buka (otomatis ditandai dibaca), balas via email / WhatsApp, tandai belum dibaca, hapus |
 | Master → Kategori | `/admin/kategori.html` | Tambah, ganti nama, dan hapus kategori |
 
@@ -271,7 +285,7 @@ npx netlify deploy --prod
 | `403 insufficient authentication scopes` / `Request had insufficient authentication scopes` | Refresh token dibuat tanpa scope `spreadsheets` atau `drive`. Ulangi langkah 5 dengan kedua scope. |
 | `403 The caller does not have permission` di Sheets | Spreadsheet bukan milik akun yang login di Playground. Pakai akun yang sama, atau share spreadsheet ke akun itu sebagai Editor. |
 | `404 File not found` saat upload | `DRIVE_FOLDER_ID` salah atau folder bukan milik akun yang sama. |
-| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` / `pesan` / `testimoni` / `galeri` / `dokumen` persis. |
+| `Unable to parse range: berita!A:Z` | Nama tab bukan `berita` / `users` / `kategori` / `pesan` / `testimoni` / `galeri` / `dokumen` / `reservasi` persis. |
 | `redirect_uri_mismatch` | Redirect URI di OAuth client belum `https://developers.google.com/oauthplayground`. |
 
 ## Catatan
@@ -280,6 +294,8 @@ npx netlify deploy --prod
 - Halaman depan menampilkan maksimal 6 testimoni ber-status publish (urut `urutan`, lalu terbaru). Pengunjung tidak bisa mengunggah foto; foto ditambahkan admin.
 - Galeri: halaman depan menampilkan 6 album publish terbaru (urut tanggal kegiatan). Satu album maksimal 200 foto; admin bisa memilih maksimal 20 foto per kali pilih, lalu foto diunggah satu per satu saat disimpan. Menghapus album atau foto dari album **tidak** menghapus file di Google Drive.
 - Pojok Informasi: halaman depan menampilkan 3 dokumen publish terbaru (urut tanggal dokumen); `informasi.html` menampilkan 10 dokumen per halaman, dan pencarian, filter jenis, serta halaman tersimpan di URL (`?q=&jenis=&hal=`). Tombol **Lihat** membuka penampil Google Drive, **Unduh** mengunduh file. Menghapus dokumen **tidak** menghapus file di Drive.
+- Seksi **Kampung Pancasila** di halaman depan statis. Nama RW dan semua angkanya (masih **data contoh**) ada di objek `DATA` di `public/assets/js/kampung-pancasila.js`; ubah di sana untuk memperbarui kartu pilar dan diagram, lalu hapus label "Data contoh" di `index.html`.
+- Reservasi kunjungan: Senin–Sabtu, 08.00–16.00 WIB, jam mulai tiap 30 menit, durasi 60/90/120 menit, mulai besok sampai 60 hari ke depan (aturan di `CONFIG`, `netlify/functions/utils/reservasi.js`). Reservasi yang menunggu atau disetujui tidak boleh bentrok jamnya; yang ditolak membebaskan jamnya. Pengunjung mendapat kode (mis. `RSV-7K2QF`) untuk cek status. Konfirmasi WhatsApp dikirim admin lewat tombol `wa.me` (bukan otomatis). Nama program, RT/RW, dan nomor admin di `reservasi.html`, seksi `#reservasi` di `index.html`, dan `LOKASI` di `admin-reservasi.js` masih **contoh**.
 - Endpoint `get-berita` di-cache 60 detik (`Cache-Control: public, max-age=60`), jadi berita baru bisa butuh hingga 1 menit untuk muncul di halaman publik.
 - Gambar dikompres di browser (lebar maks 1600px, JPEG kualitas 0.8) sebelum diunggah; server menolak file > 4 MB (batas body request Netlify ±6 MB, base64 menambah ±33%). Folder `dokumen` juga menerima PDF.
 - Token login berlaku 8 jam. Setelah kedaluwarsa, admin otomatis diarahkan ke halaman login.

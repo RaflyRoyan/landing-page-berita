@@ -62,6 +62,20 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 
 - [x] Diputuskan pemilik (23 Okt 2026): konten hero, tentang, dan kontak tetap **statis** di `public/index.html` (diedit langsung di file), tidak dikelola lewat admin
 
+## 6. Seksi Kampung Pancasila
+
+- [x] Seksi statis di bawah Berita: ringkasan program, angka ringkas, kartu 4 pilar, diagram kegiatan per bulan & sampah terpilah
+- [ ] Ganti nama RW dan data contoh dengan data asli (`DATA` di `public/assets/js/kampung-pancasila.js`), lalu hapus label "Data contoh"
+
+## 7. Reservasi kunjungan (Belajar Bareng Kelola Lingkungan)
+
+- [x] Desain: tanpa sesi tetap; pilih tanggal, jam mulai (tiap 30 menit) + durasi 60/90/120, tidak boleh bentrok; Senin–Sabtu 08.00–16.00; halaman `reservasi.html` + kalender di landing
+- [x] Function `jadwal-`/`create-`/`cek-reservasi` (publik) + `get-`/`update-`/`delete-reservasi` (admin)
+- [x] Halaman publik `reservasi.html`, seksi kalender di landing, halaman admin Reservasi + konfirmasi WhatsApp
+- [ ] Tab Sheets `reservasi` → **dibuat pemilik di spreadsheet** (header: id, kode, tanggal_kunjungan, jam_mulai, durasi, organisasi, nama_pic, jumlah, telepon, email, sumber_info, surat_id, status, tanggal)
+- [ ] (Opsional) folder Drive `reservasi/` + env `DRIVE_FOLDER_RESERVASI_ID` untuk surat permohonan
+- [ ] Ganti data contoh: nama program, RT/RW/kelurahan, nomor WhatsApp admin (`reservasi.html`, seksi `#reservasi` di `index.html`, `LOKASI` di `admin-reservasi.js`)
+
 ## Ditunda
 
 - **Multi bahasa**: ditunda atas permintaan pemilik (22 Okt 2026). Jangan tambahkan kolom `_en` atau pemilih bahasa sampai fitur ini diaktifkan lagi. Catatan diskusi sebelumnya (belum final): Indonesia + Inggris, semua konten diterjemahkan otomatis lewat Claude API, admin hanya menulis bahasa Indonesia.
