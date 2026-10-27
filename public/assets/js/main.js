@@ -18,6 +18,65 @@
     );
   }
 
+  // Header transparan di atas hero foto (beranda): jadi solid saat scroll atau menu terbuka
+  const header = document.querySelector('.site-header');
+  const hero = document.querySelector('[data-hero]');
+  if (header && hero) {
+    const solid = () => header.classList.toggle('is-solid', window.scrollY > 24 || (nav && nav.classList.contains('open')));
+    solid();
+    window.addEventListener('scroll', solid, { passive: true });
+    if (toggle) toggle.addEventListener('click', solid);
+  }
+
+  // Latar foto bergerak: [data-depth] bergeser pelan terhadap seksinya, --hp = progres scroll hero (0–1).
+  // Tidak jalan kalau pengguna memilih kurangi gerak.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const layers = Array.from(document.querySelectorAll('[data-depth]'));
+  if (!reduceMotion && (layers.length || hero)) {
+    let ticking = false;
+    const frame = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      layers.forEach((el) => {
+        const box = el.parentElement.getBoundingClientRect();
+        if (box.bottom < -vh * 0.25 || box.top > vh * 1.25) return;
+        const offset = box.top + box.height / 2 - vh / 2;
+        el.style.setProperty('--shift', `${(-offset * Number(el.dataset.depth)).toFixed(1)}px`);
+      });
+      if (hero) {
+        const box = hero.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, -box.top / box.height));
+        hero.style.setProperty('--hp', p.toFixed(3));
+      }
+    };
+    const request = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(frame);
+      }
+    };
+    frame();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+  }
+
+  // Muncul lembut saat masuk layar
+  const reveals = document.querySelectorAll('[data-reveal]');
+  if (!reduceMotion && reveals.length && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-motion');
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }),
+      { rootMargin: '0px 0px -10% 0px' }
+    );
+    reveals.forEach((el) => io.observe(el));
+  }
+
   document.querySelectorAll('[data-year]').forEach((el) => {
     el.textContent = new Date().getFullYear();
   });

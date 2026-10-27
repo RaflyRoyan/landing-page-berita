@@ -12,6 +12,8 @@
   --color-danger: #c0392b;
   --color-danger-soft: #fbeae8;
   --color-success: #1e8449;
+  --color-deep: #0b2a22;     /* hijau tua di bawah foto latar */
+  --color-gold: #f6c983;     /* aksen terang di atas foto gelap */
 
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
@@ -19,6 +21,7 @@
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.04), 0 18px 40px rgba(11, 42, 34, 0.12);
   --container: 1120px;
   --gutter: 16px;
 }
@@ -263,25 +266,78 @@ h3 { font-size: 1.2rem; }
 .nav a:hover,
 .nav a.active { color: var(--color-primary); }
 
-/* ===== Hero ===== */
+/* ===== Hero foto berlapis (beranda) =====
+   Lapisan: .photo-layer (belakang, parallax) → .hero-scrim → teks & .hero-card (tengah) → .hero-frond (depan).
+   --shift dan --hp diisi main.js; tanpa JS / reduced motion semuanya diam di posisi awal. */
 .hero {
-  padding: 56px 0 64px;
-  background:
-    radial-gradient(circle at 85% 20%, rgba(242, 165, 65, 0.18), transparent 45%),
-    radial-gradient(circle at 10% 90%, rgba(15, 110, 90, 0.12), transparent 50%);
+  position: relative;
+  display: grid;
+  align-items: end;
+  min-height: 92vh;
+  min-height: min(92svh, 880px);
+  margin-top: -64px; /* masuk ke bawah header transparan */
+  padding: 128px 0 56px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-deep);
+  color: #fff;
 }
 
-.hero-grid {
+.photo-layer {
+  position: absolute;
+  inset: -14% 0;
+  z-index: -2;
+  transform: translate3d(0, var(--shift, 0px), 0);
+  will-change: transform;
+}
+
+.photo-layer picture,
+.photo-layer img {
+  width: 100%;
+  height: 100%;
+}
+
+.photo-layer img { object-fit: cover; }
+
+.hero .photo-layer { inset: -4% 0 -20%; }
+.hero .photo-layer img { animation: hero-settle 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(8, 36, 29, 0.55) 0%, rgba(8, 36, 29, 0) 26%),
+    linear-gradient(0deg, rgba(8, 36, 29, 0.92) 0%, rgba(8, 36, 29, 0.7) 42%, rgba(8, 36, 29, 0.3) 72%, rgba(8, 36, 29, 0.35) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 32px;
-  align-items: center;
+  gap: 28px;
+  align-items: end;
+}
+
+.hero-copy { max-width: 640px; }
+.hero-copy > * { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero-copy > :nth-child(2) { animation-delay: 0.08s; }
+.hero-copy > :nth-child(3) { animation-delay: 0.16s; }
+.hero-copy > :nth-child(4) { animation-delay: 0.24s; }
+
+.hero h1 {
+  font-size: clamp(2.3rem, 6.4vw, 4.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.4em;
+  text-wrap: balance;
 }
 
 .hero p.lead {
-  font-size: 1.1rem;
-  color: var(--color-muted);
-  max-width: 54ch;
-  margin: 0 0 24px;
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.84);
+  max-width: 50ch;
+  margin: 0 0 28px;
 }
 
 .hero-actions {
@@ -290,27 +346,213 @@ h3 { font-size: 1.2rem; }
   gap: 12px;
 }
 
-.hero-visual {
-  aspect-ratio: 4 / 3;
-  border-radius: 20px;
-  background:
-    linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+.hero-card {
+  display: grid;
+  gap: 4px;
+  max-width: 320px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  text-decoration: none;
+  translate: 0 calc(var(--hp, 0) * -48px);
+  transition: background-color 0.2s ease;
+  animation: rise 0.9s 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero-card:hover { background: rgba(255, 255, 255, 0.2); }
+.hero-card:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.hero-card-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-gold); }
+.hero-card strong { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; line-height: 1.25; }
+.hero-card span { font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); }
+.hero-card .hero-card-link { margin-top: 6px; font-weight: 600; color: #fff; }
+
+/* Ciri khas: pelepah daun menggantung di depan kamera, tersibak ke samping saat hero di-scroll */
+.hero-frond {
+  position: absolute;
+  top: 56px;
+  z-index: 2;
+  height: auto;
+  pointer-events: none;
+  animation: sway 9s ease-in-out infinite;
+}
+
+.hero-frond-l {
+  left: -4%;
+  width: clamp(150px, 26vw, 360px);
+  transform-origin: 0 0;
+  translate: calc(var(--hp, 0) * -34%) calc(var(--hp, 0) * -14%);
+  filter: blur(1px) drop-shadow(0 12px 18px rgba(0, 0, 0, 0.25));
+}
+
+.hero-frond-r {
+  right: -5%;
+  top: 40px;
+  width: clamp(180px, 32vw, 440px);
+  transform-origin: 100% 0;
+  translate: calc(var(--hp, 0) * 38%) calc(var(--hp, 0) * -16%);
+  filter: blur(2.5px) drop-shadow(0 16px 24px rgba(0, 0, 0, 0.3));
+  animation-delay: -4s;
+  animation-duration: 11s;
+}
+
+@keyframes sway {
+  0%, 100% { rotate: -1.4deg; }
+  50% { rotate: 1.4deg; }
+}
+
+@keyframes rise {
+  from { opacity: 0; translate: 0 16px; }
+}
+
+@keyframes hero-settle {
+  from { scale: 1.07; }
+}
+
+/* Header transparan di atas hero; .is-solid dipasang main.js saat scroll / menu terbuka */
+.home .site-header {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.home .site-header:not(.is-solid) {
+  background: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+}
+
+.home .site-header:not(.is-solid) .brand,
+.home .site-header:not(.is-solid) .nav-toggle,
+.home .site-header:not(.is-solid) .nav a { color: #fff; }
+.home .site-header:not(.is-solid) .brand span,
+.home .site-header:not(.is-solid) .nav a.active,
+.home .site-header:not(.is-solid) .nav a:hover { color: var(--color-gold); }
+
+/* Teks di atas foto gelap */
+.on-dark { color: #fff; }
+.on-dark h1,
+.on-dark h2,
+.on-dark h3 { color: #fff; }
+.on-dark .eyebrow { color: var(--color-gold); }
+.on-dark .muted { color: rgba(255, 255, 255, 0.82); }
+.on-dark a:not(.btn) { color: #fff; }
+.on-dark .btn:not(.btn-glass) { background: var(--color-accent); color: var(--color-text); }
+.on-dark .btn:not(.btn-glass):hover { background: var(--color-gold); }
+.on-dark .feature-icon { background: rgba(255, 255, 255, 0.12); color: var(--color-gold); }
+.on-dark .rsv-info {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.on-dark .rsv-info div + div { border-left-color: rgba(255, 255, 255, 0.22); }
+.on-dark .rsv-info dt { color: rgba(255, 255, 255, 0.72); }
+.on-dark .kp-note { margin: 18px 0 0; color: rgba(255, 255, 255, 0.82); }
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.btn-glass:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Seksi berlatar foto penuh (Reservasi, Kontak); scrim paling gelap di sisi teks */
+.section-photo {
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  isolation: isolate;
+  background: var(--color-deep);
 }
 
-.hero-visual::before,
-.hero-visual::after {
+.section-photo::before {
   content: "";
   position: absolute;
-  border-radius: 50%;
-  background: var(--color-accent);
-  opacity: 0.85;
+  inset: 0;
+  z-index: -1;
+  background: rgba(8, 36, 29, 0.86);
 }
 
-.hero-visual::before { width: 45%; aspect-ratio: 1; right: -8%; top: -10%; }
-.hero-visual::after { width: 25%; aspect-ratio: 1; left: 10%; bottom: 12%; opacity: 0.4; background: #fff; }
+.section-photo .panel,
+.section-photo .contact-form {
+  border: 0;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+/* Kampung Pancasila: pita foto, kartu angka menumpang di tepi bawahnya */
+.section-kp { padding-top: 0; }
+
+.photo-band {
+  position: relative;
+  display: flex;
+  align-items: end;
+  min-height: 440px;
+  padding: 96px 0 104px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-deep);
+}
+
+.photo-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(0deg, rgba(8, 36, 29, 0.94) 0%, rgba(8, 36, 29, 0.72) 48%, rgba(8, 36, 29, 0.3) 100%);
+}
+
+.photo-band-text > * { max-width: 680px; }
+.photo-band-text h2 { font-size: clamp(1.8rem, 4.6vw, 2.9rem); letter-spacing: -0.01em; }
+
+.kp-body { position: relative; margin-top: -56px; }
+.kp-body .kp-stat { border: 0; box-shadow: var(--shadow-lg); }
+
+/* Muncul lembut saat masuk layar (main.js memasang .js-motion di <html>) */
+.js-motion [data-reveal] {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 0.8s ease, translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.js-motion [data-reveal].is-in { opacity: 1; translate: 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .photo-layer img,
+  .hero-copy > *,
+  .hero-card,
+  .hero-frond { animation: none; }
+}
+
+@media (max-width: 639px) {
+  .hero-card { display: none; }
+}
+
+@media (min-width: 860px) {
+  .hero { padding: 150px 0 84px; }
+  .hero-content { grid-template-columns: minmax(0, 1fr) auto; gap: 48px; }
+  .hero-scrim {
+    background:
+      linear-gradient(180deg, rgba(8, 36, 29, 0.5) 0%, rgba(8, 36, 29, 0) 24%),
+      linear-gradient(0deg, rgba(8, 36, 29, 0.6) 0%, rgba(8, 36, 29, 0) 50%),
+      linear-gradient(90deg, rgba(8, 36, 29, 0.88) 0%, rgba(8, 36, 29, 0.66) 40%, rgba(8, 36, 29, 0.12) 72%, rgba(8, 36, 29, 0) 100%);
+  }
+  .section-photo::before {
+    background: linear-gradient(100deg, rgba(8, 36, 29, 0.93) 0%, rgba(8, 36, 29, 0.84) 45%, rgba(8, 36, 29, 0.55) 100%);
+  }
+  .photo-band { min-height: 540px; padding-bottom: 136px; }
+  .photo-band::before {
+    background:
+      linear-gradient(0deg, rgba(8, 36, 29, 0.85) 0%, rgba(8, 36, 29, 0) 60%),
+      linear-gradient(90deg, rgba(8, 36, 29, 0.9) 0%, rgba(8, 36, 29, 0.6) 45%, rgba(8, 36, 29, 0.1) 80%);
+  }
+  .kp-body { margin-top: -80px; }
+}
 
 /* ===== Tentang ===== */
 .about-grid {
@@ -1767,8 +2009,6 @@ button.cal-cell:focus-visible { outline: 2px solid var(--color-primary); outline
   }
 
   .section { padding: 80px 0; }
-  .hero { padding: 88px 0 96px; }
-  .hero-grid { grid-template-columns: 1.2fr 1fr; gap: 56px; }
   .news-grid { grid-template-columns: repeat(3, 1fr); }
   .testimoni-grid { grid-template-columns: repeat(3, 1fr); }
   .gallery-grid { grid-template-columns: repeat(4, 1fr); }

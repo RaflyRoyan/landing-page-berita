@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+<body class="home">
   <header class="site-header">
     <div class="container">
       <a class="brand" href="/">Warta<span>.</span></a>
@@ -30,19 +30,38 @@
   </header>
 
   <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <span class="eyebrow">Selamat datang</span>
+    <!-- Hero berlapis: foto (belakang), scrim, teks, kartu kaca (tengah), pelepah daun (depan).
+         Foto masih contoh, lihat assets/img/latar/KREDIT.md. -->
+    <section class="hero hero-photo" data-hero>
+      <div class="photo-layer" data-depth="0.35" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 700px)" srcset="/assets/img/latar/hero-m.webp">
+          <img src="/assets/img/latar/hero.webp" alt="" width="1920" height="1280" fetchpriority="high">
+        </picture>
+      </div>
+      <div class="hero-scrim" aria-hidden="true"></div>
+
+      <div class="container hero-content">
+        <div class="hero-copy on-dark">
+          <span class="eyebrow">RT 03 · RW 07 · Kel. Sukamaju</span>
           <h1>Kabar terbaru, langsung dari sumbernya.</h1>
           <p class="lead">Kami membagikan informasi kegiatan, pengumuman, dan cerita terbaru secara terbuka dan mudah diakses siapa saja.</p>
           <div class="hero-actions">
             <a class="btn" href="/berita.html">Baca Berita</a>
-            <a class="btn btn-outline" href="#kontak">Hubungi Kami</a>
+            <a class="btn btn-glass" href="#kontak">Hubungi Kami</a>
           </div>
         </div>
-        <div class="hero-visual" aria-hidden="true"></div>
+
+        <a class="hero-card" href="#reservasi">
+          <span class="hero-card-label">Reservasi kunjungan</span>
+          <strong>Belajar Bareng Kelola Lingkungan</strong>
+          <span>Senin–Sabtu, 08.00–16.00 WIB</span>
+          <span class="hero-card-link">Lihat jadwal kosong →</span>
+        </a>
       </div>
+
+      <img class="hero-frond hero-frond-l" src="/assets/img/latar/daun-kiri.svg" alt="" aria-hidden="true">
+      <img class="hero-frond hero-frond-r" src="/assets/img/latar/daun-kanan.svg" alt="" aria-hidden="true">
     </section>
 
     <section class="section" id="tentang">
@@ -89,17 +108,23 @@
       </div>
     </section>
 
-    <section class="section" id="kampung-pancasila">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Kampung Pancasila</span>
-            <h2 id="kp-wilayah">RW 07 Kelurahan Sukamaju</h2>
-            <p class="muted">Program Kampung Pancasila Pemerintah Kota Surabaya mengajak warga menghidupkan gotong royong dan menyelesaikan masalah bersama di tingkat RT dan RW, melalui empat pilar: lingkungan, kemasyarakatan, ekonomi, dan sosial budaya.</p>
-          </div>
+    <section class="section section-kp" id="kampung-pancasila">
+      <div class="photo-band">
+        <div class="photo-layer" data-depth="0.18" aria-hidden="true">
+          <picture>
+            <source media="(max-width: 700px)" srcset="/assets/img/latar/kampung-m.webp">
+            <img src="/assets/img/latar/kampung.webp" alt="" width="1600" height="1124" loading="lazy">
+          </picture>
         </div>
-        <p class="kp-note"><span class="badge badge-draft">Data contoh</span> <span>Capaian <span id="kp-periode">Januari – Oktober 2026</span>. Angka di bawah masih contoh dan akan diganti dengan data RW.</span></p>
+        <div class="container photo-band-text on-dark" data-reveal>
+          <span class="eyebrow">Kampung Pancasila</span>
+          <h2 id="kp-wilayah">RW 07 Kelurahan Sukamaju</h2>
+          <p class="muted">Program Kampung Pancasila Pemerintah Kota Surabaya mengajak warga menghidupkan gotong royong dan menyelesaikan masalah bersama di tingkat RT dan RW, melalui empat pilar: lingkungan, kemasyarakatan, ekonomi, dan sosial budaya.</p>
+          <p class="kp-note"><span class="badge badge-draft">Data contoh</span> <span>Capaian <span id="kp-periode">Januari – Oktober 2026</span>. Angka di bawah masih contoh dan akan diganti dengan data RW.</span></p>
+        </div>
+      </div>
 
+      <div class="container kp-body">
         <div class="kp-stats" id="kp-stats"></div>
         <div class="kp-pilar-grid" id="kp-pilar"></div>
 
@@ -118,9 +143,15 @@
       </div>
     </section>
 
-    <section class="section" id="reservasi" style="background: var(--color-surface); border-block: 1px solid var(--color-border);">
+    <section class="section section-photo" id="reservasi">
+      <div class="photo-layer" data-depth="0.2" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 700px)" srcset="/assets/img/latar/reservasi-m.webp">
+          <img src="/assets/img/latar/reservasi.webp" alt="" width="1280" height="1920" loading="lazy">
+        </picture>
+      </div>
       <div class="container rsv-teaser">
-        <div>
+        <div class="on-dark" data-reveal>
           <span class="eyebrow">Reservasi kunjungan</span>
           <h2>Belajar Bareng Kelola Lingkungan</h2>
           <p class="muted">Sekolah, kampus, atau komunitas bisa berkunjung untuk belajar bank sampah, urban farming, dan pengelolaan lingkungan di RW kami. Lihat jadwal yang sudah terisi di kalender, lalu pilih tanggal dan jam yang masih kosong.</p>
@@ -223,9 +254,15 @@
       </div>
     </section>
 
-    <section class="section" id="kontak">
+    <section class="section section-photo" id="kontak">
+      <div class="photo-layer" data-depth="0.2" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 700px)" srcset="/assets/img/latar/kontak-m.webp">
+          <img src="/assets/img/latar/kontak.webp" alt="" width="1280" height="1920" loading="lazy">
+        </picture>
+      </div>
       <div class="container contact-grid">
-        <div>
+        <div class="on-dark" data-reveal>
           <span class="eyebrow">Kontak</span>
           <h2>Hubungi kami</h2>
           <p class="muted">Punya pertanyaan, saran, atau ingin bekerja sama? Silakan hubungi kami melalui kontak berikut, atau kirim pesan lewat formulir.</p>
