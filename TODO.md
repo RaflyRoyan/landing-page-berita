@@ -76,6 +76,12 @@ Pola tiap modul: satu tab Google Sheets, file di Drive (jika perlu), function `g
 - [ ] (Opsional) folder Drive `reservasi/` + env `DRIVE_FOLDER_RESERVASI_ID` untuk surat permohonan
 - [ ] Ganti data contoh: nama program, RT/RW/kelurahan, nomor WhatsApp admin (`reservasi.html`, seksi `#reservasi` di `index.html`, `LOKASI` di `admin-reservasi.js`)
 
+## 8. Tampilan premium landing (latar foto)
+
+- [x] Hero foto berlapis (parallax, kartu kaca, pelepah daun tersibak), header transparan di atas hero
+- [x] Latar foto: pita Kampung Pancasila, seksi Reservasi dan Kontak; muncul lembut saat scroll; mati jika pengguna memilih kurangi gerak
+- [ ] Ganti foto contoh Unsplash di `public/assets/img/latar/` dengan foto RW sendiri (nama file sama, `*.webp` lebar ±1600–1920px, `*-m.webp` lebar 900px), lalu perbarui `KREDIT.md`
+
 ## Ditunda
 
 - **Multi bahasa**: ditunda atas permintaan pemilik (22 Okt 2026). Jangan tambahkan kolom `_en` atau pemilih bahasa sampai fitur ini diaktifkan lagi. Catatan diskusi sebelumnya (belum final): Indonesia + Inggris, semua konten diterjemahkan otomatis lewat Claude API, admin hanya menulis bahasa Indonesia.
