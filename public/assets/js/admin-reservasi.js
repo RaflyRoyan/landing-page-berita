@@ -7,7 +7,7 @@
   const R = window.Reservasi;
   const API = window.API;
 
-  const LOKASI = 'RT 03 RW 07 Kel. Sukamaju'; // data contoh, samakan dengan reservasi.html
+  const LOKASI = 'RW 03 Kel. Tambakrejo'; // samakan dengan reservasi.html
   const STATUS = {
     menunggu: ['badge-draft', 'menunggu'],
     disetujui: ['', 'disetujui'],
@@ -39,7 +39,7 @@
     if (r.status === 'ditolak') {
       return `${awal} mohon maaf belum dapat kami terima. Silakan pilih jadwal lain di ${window.location.origin}/reservasi.html. Terima kasih.`;
     }
-    return `${awal} sudah kami terima dan sedang menunggu persetujuan Ketua RT. Terima kasih.`;
+    return `${awal} sudah kami terima dan sedang menunggu persetujuan pengurus RW. Terima kasih.`;
   }
 
   function row(r) {

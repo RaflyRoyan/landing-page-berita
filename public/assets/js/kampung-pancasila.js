@@ -1,49 +1,93 @@
-/* Seksi Kampung Pancasila di landing (index.html #kampung-pancasila). Konten statis:
-   ubah angka di DATA untuk memperbarui kartu dan diagram. DATA MASIH CONTOH (dummy). */
+/* Seksi Kampung Pancasila di landing (index.html #kampung-pancasila). Konten statis.
+   Wilayah, ringkasan, fokus, dan indikator pilar berasal dari dokumen profil RW 03 Tambakrejo.
+   Angka diagram per bulan (bulan, kegiatanPerBulan, sampahPerBulan) MASIH CONTOH (dummy). */
 (function () {
   const root = document.getElementById('kampung-pancasila');
   if (!root) return;
 
   const DATA = {
-    wilayah: 'RW 07 Kelurahan Sukamaju',
+    wilayah: 'RW 03 Kelurahan Tambakrejo',
     periode: 'Januari – Oktober 2026',
     ringkasan: [
-      { label: 'Kegiatan terlaksana', nilai: 86, satuan: '' },
-      { label: 'Sampah terpilah', nilai: 1240, satuan: 'kg' },
-      { label: 'Titik CCTV aktif', nilai: 12, satuan: '' },
-      { label: 'UMKM binaan', nilai: 18, satuan: '' },
+      { label: 'Rukun Tetangga', nilai: 9, satuan: 'RT' },
+      { label: 'Indikator Kampung Pancasila', nilai: 42, satuan: '' },
+      { label: 'Tahap penyaringan IPL CRT', nilai: 4, satuan: 'tahap' },
+      { label: 'Lapangan rumput sintetis', nilai: 120, satuan: 'm' },
     ],
-    // Empat pilar Kampung Pancasila Kota Surabaya
+    // Empat pilar Kampung Pancasila Kota Surabaya. Kode indikator mengikuti dokumen.
     pilar: [
       {
         nama: 'Lingkungan',
         ikon: 'leaf',
-        kegiatan: 28,
-        indikator: [9, 10], // tercapai, total
-        contoh: ['Pilah sampah dari rumah & bank sampah', 'Urban farming di 6 gang', 'Kerja bakti tiap Minggu kedua'],
-      },
-      {
-        nama: 'Kemasyarakatan',
-        ikon: 'shield',
-        kegiatan: 24,
-        indikator: [8, 10],
-        contoh: ['Siskamling bergilir di 7 pos', '12 titik CCTV, bebas curanmor', 'Sosialisasi cegah narkoba & simulasi bencana'],
+        fokus: ['Pengelolaan sampah', 'Penghijauan & ketahanan pangan', 'Sanitasi & drainase', 'Kebersihan kawasan', 'Konservasi sumber daya'],
+        indikator: [
+          ['PL-01', 'Alur pengelolaan sampah tertata dan tercatat'],
+          ['PL-02', 'Inovasi pengelolaan sampah organik berkelanjutan'],
+          ['PL-03', 'Keberadaan dan operasional bank sampah lingkungan'],
+          ['PL-04', 'Pemilahan sampah tingkat rumah tangga'],
+          ['PL-05', 'Pelaksanaan kerja bakti lingkungan terjadwal'],
+          ['PL-06', 'Sanitasi lingkungan dan bebas ODF (Stop BABS)'],
+          ['PL-07', 'Pengendalian jentik nyamuk (ABJ ≥ 95%)'],
+          ['PL-08', 'Ketahanan pangan (urban farming dan kolam ikan U-Ditch)'],
+        ],
       },
       {
         nama: 'Ekonomi',
         ikon: 'coin',
-        kegiatan: 16,
-        indikator: [6, 10],
-        contoh: ['Jimpitan untuk warga kurang mampu', '18 UMKM binaan', 'Pelatihan pemasaran digital'],
+        fokus: ['Sumber pendapatan alternatif', 'UMKM', 'Ekonomi sirkular', 'Produk lokal', 'Pemberdayaan ekonomi warga'],
+        indikator: [
+          ['PE-01', 'Data warga usia produktif belum bekerja dan fasilitasinya'],
+          ['PE-02', 'Legalitas usaha mikro dan kecil (UMK)'],
+          ['PE-03', 'Keterlibatan pemuda/Karang Taruna dalam nilai ekonomi'],
+          ['PE-04', 'Pemasaran digital dan gerai komunitas bersama'],
+          ['PE-05', 'Pengembangan wisata kampung dan produk unggulan'],
+          ['PE-06', 'Donasi swadaya warga dan pengentasan kemiskinan (GAMIS)'],
+          ['PE-07', 'Basis data pelaku UMK wilayah termutakhir'],
+          ['PE-08', 'Tata kelola SOP pembagian hasil usaha produktif'],
+        ],
+      },
+      {
+        nama: 'Kemasyarakatan',
+        ikon: 'shield',
+        fokus: ['Kelembagaan & partisipasi', 'Gotong royong', 'Pelayanan sosial', 'Keamanan & ketertiban', 'Transparansi tata kelola'],
+        indikator: [
+          ['PK-01', 'Sistem deteksi dini dan pencegahan gangguan kamtibmas'],
+          ['PK-02', 'Pelaksanaan patroli siskamling rutin'],
+          ['PK-03', 'Pengawasan dan jam malam remaja di bawah 18 tahun'],
+          ['PK-04', 'Pendekatan persuasif dengan melibatkan orang tua'],
+          ['PK-05', 'Pembentukan tim tanggap bencana lingkungan'],
+          ['PK-06', 'Rambu jalur evakuasi dan titik kumpul darurat'],
+          ['PK-07', 'Edukasi pencegahan bahaya narkoba (P4GN)'],
+          ['PK-08', 'Tertib administrasi kependudukan (Adminduk)'],
+          ['PK-09', 'Kepedulian fasilitas penerangan jalan umum (PJU)'],
+          ['PK-10', 'Sarana dan prasarana pos ronda siskamling'],
+          ['PK-11', 'Penjadwalan rutin kerja bakti tingkat lingkungan'],
+          ['PK-12', 'Persentase partisipasi warga dalam kerja bakti'],
+          ['PK-13', 'Edukasi nomor darurat bebas pulsa (112 dan WA)'],
+          ['PK-14', 'Laporan kamtibmas dan nihil kasus curanmor selama 1 tahun'],
+          ['PK-15', 'Pemetaan area rawan konflik dan SOP mediasi'],
+          ['PK-16', 'Pelatihan dan simulasi penanggulangan bencana'],
+          ['PK-17', 'SOP musyawarah warga yang teratur dan notulen rapat'],
+        ],
       },
       {
         nama: 'Sosial Budaya',
         ikon: 'heart',
-        kegiatan: 18,
-        indikator: [7, 10],
-        contoh: ['Posyandu balita & lansia', 'Pendampingan anak putus sekolah', 'Kelas parenting cegah kekerasan'],
+        fokus: ['Pelestarian budaya lokal', 'Kegiatan sosial budaya', 'Pendidikan & literasi', 'Pembinaan generasi muda', 'Solidaritas sosial'],
+        indikator: [
+          ['PS-01', 'Identifikasi dan penanganan kasus anak putus sekolah'],
+          ['PS-02', 'Bimbingan belajar (Sinau Bareng) di balai'],
+          ['PS-03', 'Identifikasi dan pendampingan warga PPKS'],
+          ['PS-04', 'Identifikasi dan advokasi rumah tidak layak huni (Rutilahu)'],
+          ['PS-05', 'Ketahanan keluarga (PUSPAGA, SOTH, KASRPA)'],
+          ['PS-06', 'Penerapan kawasan bebas asap rokok di ruang publik'],
+          ['PS-07', 'Pemantauan kesehatan bumil dan balita serta pencegahan stunting'],
+          ['PS-08', 'Promosi kesehatan dan penyuluhan bebas TB dan PHBS'],
+          ['PS-09', 'Rukun kematian dan SOP regenerasi transisi kepengurusan'],
+        ],
       },
     ],
+    // Diagram di bawah ini masih data contoh
     bulan: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt'],
     kegiatanPerBulan: [5, 6, 8, 7, 9, 10, 8, 11, 12, 10],
     sampahPerBulan: [80, 95, 105, 110, 120, 130, 135, 145, 155, 165], // kg
@@ -75,23 +119,21 @@
     .join('');
 
   el('kp-pilar').innerHTML = DATA.pilar
-    .map((p) => {
-      const [done, total] = p.indikator;
-      const pct = Math.round((done / total) * 100);
-      return `
+    .map(
+      (p) => `
       <article class="kp-pilar">
         <div class="kp-pilar-head">
           <span class="feature-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[p.ikon] || ''}</svg></span>
           <h3>${esc(p.nama)}</h3>
         </div>
-        <p class="kp-pilar-count"><strong>${fmt(p.kegiatan)}</strong> kegiatan</p>
-        <div class="kp-meter" role="img" aria-label="${done} dari ${total} indikator tercapai">
-          <span style="width: ${pct}%"></span>
-        </div>
-        <p class="kp-meter-label">${done}/${total} indikator tercapai</p>
-        <ul>${p.contoh.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
-      </article>`;
-    })
+        <p class="kp-pilar-count"><strong>${fmt(p.indikator.length)}</strong> indikator</p>
+        <ul>${p.fokus.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>
+        <details class="kp-indikator">
+          <summary>Lihat indikator</summary>
+          <ol>${p.indikator.map(([kode, teks]) => `<li><span class="kp-kode">${esc(kode)}</span>${esc(teks)}</li>`).join('')}</ol>
+        </details>
+      </article>`
+    )
     .join('');
 
   // ----- Diagram (SVG, digambar ulang saat lebar berubah) -----

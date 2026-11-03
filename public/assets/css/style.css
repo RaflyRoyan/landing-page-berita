@@ -555,17 +555,131 @@ h3 { font-size: 1.2rem; }
 }
 
 /* ===== Tentang ===== */
-.about-grid {
-  display: grid;
-  gap: 16px;
+.section-alt { background: var(--color-surface); border-block: 1px solid var(--color-border); }
+
+.about-layout { display: grid; gap: 28px; }
+.about-text p { margin: 0 0 1em; color: var(--color-muted); max-width: 62ch; }
+.about-text p:last-child { margin-bottom: 0; }
+.about-text em { color: var(--color-text); }
+
+.about-facts {
+  align-self: start;
+  padding: 24px;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius);
 }
 
-.feature {
+.about-facts h3 { margin-bottom: 12px; font-size: 1.05rem; }
+.about-facts dl { display: grid; gap: 14px; margin: 0; }
+.about-facts dt { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary); }
+.about-facts dd { margin: 2px 0 0; font-size: 0.95rem; }
+
+/* ===== Visi & misi ===== */
+.visi { max-width: 820px; margin-bottom: 32px; }
+.visi-quote {
+  margin: 0 0 16px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
+  line-height: 1.35;
+  color: var(--color-primary-dark);
+}
+.visi .kp-note { margin: 0; }
+
+.misi-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: misi;
+}
+
+.misi-list li {
+  counter-increment: misi;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.misi-list li::before {
+  content: counter(misi, decimal-leading-zero);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-accent);
+}
+
+/* ===== Program warga ===== */
+.program-tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.program-feature {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 16px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--color-deep);
+  color: #fff;
+}
+
+.program-feature .program-tag { background: rgba(255, 255, 255, 0.12); color: var(--color-gold); }
+.program-feature .muted { color: rgba(255, 255, 255, 0.8); margin: 0; }
+
+.program-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-self: center;
+}
+
+.program-steps li {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 600;
+}
+
+.program-steps span {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-gold);
+}
+
+.program-grid { display: grid; gap: 16px; }
+
+.program-card {
   padding: 24px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
 }
+
+.program-card p { margin: 0 0 0.8em; font-size: 0.95rem; }
+.program-card p:last-child { margin-bottom: 0; }
+.program-card ul { margin: 0; padding-left: 18px; font-size: 0.92rem; color: var(--color-muted); }
+.program-card li + li { margin-top: 4px; }
 
 .feature-icon {
   width: 40px;
@@ -1457,7 +1571,7 @@ h3 { font-size: 1.2rem; }
 .kp-stat-value { font-size: 1.6rem; font-weight: 600; line-height: 1.1; color: var(--color-text); }
 .kp-stat-value small { font-size: 0.9rem; font-weight: 500; color: var(--color-muted); }
 
-.kp-pilar-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+.kp-pilar-grid { display: grid; gap: 12px; align-items: start; margin-bottom: 20px; }
 
 .kp-pilar {
   padding: 16px;
@@ -1472,18 +1586,16 @@ h3 { font-size: 1.2rem; }
 .kp-pilar-count { margin: 12px 0 6px; font-size: 0.9rem; color: var(--color-muted); }
 .kp-pilar-count strong { font-size: 1.3rem; color: var(--color-text); }
 
-.kp-meter {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--color-primary-soft);
-  overflow: hidden;
-}
-
-.kp-meter span { display: block; height: 100%; border-radius: 999px; background: var(--color-primary); }
-.kp-meter-label { margin: 6px 0 10px; font-size: 0.8rem; color: var(--color-muted); }
-
 .kp-pilar ul { margin: 0; padding-left: 18px; font-size: 0.88rem; color: var(--color-muted); }
 .kp-pilar li + li { margin-top: 4px; }
+
+.kp-indikator { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--color-border); font-size: 0.85rem; }
+.kp-indikator summary { cursor: pointer; font-weight: 600; color: var(--color-primary); }
+.kp-indikator ol { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; color: var(--color-muted); }
+.kp-indikator li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 6px; margin: 0; }
+.kp-kode { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--color-text); }
+
+.kp-chart-note { margin: 0 0 12px; }
 
 .kp-charts { display: grid; gap: 12px; }
 
@@ -1985,7 +2097,8 @@ button.cal-cell:focus-visible { outline: 2px solid var(--color-primary); outline
   .doc-item { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
   .kp-pilar-grid { grid-template-columns: repeat(2, 1fr); }
   .doc-actions { grid-column: auto; }
-  .about-grid { grid-template-columns: repeat(3, 1fr); }
+  .misi-list { grid-template-columns: 1fr 1fr; }
+  .program-steps { grid-template-columns: repeat(4, 1fr); }
   .field-row { grid-template-columns: 1fr 1fr; }
   .topbar-name,
   .topbar-user .btn span { display: inline; }
@@ -2015,6 +2128,11 @@ button.cal-cell:focus-visible { outline: 2px solid var(--color-primary); outline
   .kp-stats { grid-template-columns: repeat(4, 1fr); }
   .kp-pilar-grid { grid-template-columns: repeat(4, 1fr); }
   .kp-charts { grid-template-columns: 1fr 1fr; }
+  .about-layout { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 48px; }
+  .misi-list { grid-template-columns: repeat(3, 1fr); }
+  .program-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; padding: 32px; }
+  .program-steps { grid-template-columns: repeat(2, 1fr); }
+  .program-grid { grid-template-columns: repeat(3, 1fr); }
   .rsv-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
   .rsv-teaser { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
   .rsv-grid { grid-template-columns: 300px minmax(0, 1fr); }
