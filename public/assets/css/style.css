@@ -615,6 +615,51 @@ h3 { font-size: 1.2rem; }
   color: var(--color-accent);
 }
 
+/* ===== Pengurus & daftar RT ===== */
+.pengurus-grid {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+}
+
+.pengurus-card {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius);
+}
+
+.pengurus-card strong { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 600; }
+.pengurus-card .muted { font-size: 0.88rem; }
+.pengurus-jabatan { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary); }
+
+.rt-wrap { display: grid; gap: 20px; }
+
+.rt-totals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  align-content: start;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--color-primary-soft);
+}
+
+.rt-totals { align-self: start; }
+.rt-totals > div { display: grid; }
+.rt-totals p { grid-column: 1 / -1; margin: 0; }
+.rt-total-value { font-family: var(--font-heading); font-size: 1.7rem; font-weight: 700; line-height: 1.1; color: var(--color-primary-dark); }
+
+.rt-table { background: var(--color-surface); }
+.rt-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.rt-table tfoot th,
+.rt-table tfoot td { font-weight: 600; color: var(--color-text); border-bottom: 0; }
+
 /* ===== Program warga ===== */
 .program-tag {
   display: inline-block;
@@ -676,6 +721,7 @@ h3 { font-size: 1.2rem; }
   border-radius: var(--radius);
 }
 
+.section-alt .program-card { background: var(--color-bg); }
 .program-card p { margin: 0 0 0.8em; font-size: 0.95rem; }
 .program-card p:last-child { margin-bottom: 0; }
 .program-card ul { margin: 0; padding-left: 18px; font-size: 0.92rem; color: var(--color-muted); }
@@ -2099,6 +2145,7 @@ button.cal-cell:focus-visible { outline: 2px solid var(--color-primary); outline
   .doc-actions { grid-column: auto; }
   .misi-list { grid-template-columns: 1fr 1fr; }
   .program-steps { grid-template-columns: repeat(4, 1fr); }
+  .pengurus-grid { grid-template-columns: 1fr 1fr; }
   .field-row { grid-template-columns: 1fr 1fr; }
   .topbar-name,
   .topbar-user .btn span { display: inline; }
@@ -2133,6 +2180,9 @@ button.cal-cell:focus-visible { outline: 2px solid var(--color-primary); outline
   .program-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; padding: 32px; }
   .program-steps { grid-template-columns: repeat(2, 1fr); }
   .program-grid { grid-template-columns: repeat(3, 1fr); }
+  .pengurus-grid { grid-template-columns: repeat(4, 1fr); }
+  .rt-wrap { grid-template-columns: 260px minmax(0, 1fr); gap: 32px; }
+  .rt-totals { grid-template-columns: 1fr; gap: 16px; }
   .rsv-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
   .rsv-teaser { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
   .rsv-grid { grid-template-columns: 300px minmax(0, 1fr); }
